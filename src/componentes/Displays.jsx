@@ -1,0 +1,23 @@
+import styled from 'styled-components'
+
+export const DisplayPrincipal = styled.div`
+    width: 100%;
+    height: 100%;
+    padding: 10px 20px;
+`
+
+export const ContenedorHeader = styled(DisplayPrincipal)`
+    display: flex;
+    justify-content:center;
+    align-items:center;
+
+    border-radius: 0 0 20px 20px;
+    height: 80px;
+    padding: 0;
+    margin-bottom: 20px;
+    color: white;
+    font-weight:bold;
+    font-size: 26px;
+
+    background-color: var(--colorPv1)
+`
