@@ -5,6 +5,15 @@ export const DisplayPrincipal = styled.div`
     height: 100%;
     padding: 10px 20px;
 `
+export const ContenedorPrincipal =styled.div`
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    width: 100%;
+    height: 100%;
+`
 
 export const ContenedorHeader = styled(DisplayPrincipal)`
     display: flex;
