@@ -44,7 +44,7 @@ const CardT = ({nombreTarjeta, cantidad}) => {
 
 export const SCardTarjetas = () => {
     return(
-        <ContenedorCards>
+        <ContenedorCards >
             <CardT nombreTarjeta='Activos' cantidad='cambiar'></CardT>
             <CardT nombreTarjeta='Pasivos' cantidad='cambiar'></CardT>
             <CardT nombreTarjeta='Deudas'  cantidad='cambiar'></CardT>

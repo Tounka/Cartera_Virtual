@@ -15,9 +15,11 @@ export const ContenedorPrincipal =styled.div`
     height: 100%;
 `
 
+
+
 export const ContenedorHeader = styled(DisplayPrincipal)`
     display: flex;
-    justify-content:center;
+    justify-content:space-between;
     align-items:center;
 
     border-radius: 0 0 20px 20px;
@@ -28,5 +30,6 @@ export const ContenedorHeader = styled(DisplayPrincipal)`
     font-weight:bold;
     font-size: 26px;
 
-    background-color: var(--colorPv1)
+    background-color: var(--colorPv1);
+    overflow:hidden;
 `
