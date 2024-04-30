@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { TextoPrincipalSession, FormStyled, FieldCampo, BtnSubmit, ContenedorPSesion, FieldSelect } from "./ComPSesion";
+import { TextoPrincipalSession, FormStyled, FieldCampo, BtnSubmit, ContenedorPSesion, FieldSelect, DateInput } from "./ComPSesion";
 import { supabase } from "../supabase/client";
+import { useDatos } from "../js/DatosContext";
 
 const ModalStyled = styled.div`
     position: fixed;
@@ -12,7 +13,7 @@ const ModalStyled = styled.div`
     width: 100%;
     height: 100%;
     overflow: hidden;
-    display: ${props => (props.switchModalAgregarTarjeta === 0 ? 'none' : 'flex')};
+    display: ${props => (props.switchModal === 0 ? 'none' : 'flex')};
     justify-content: center;
     align-items: center;
 `;
@@ -35,25 +36,38 @@ const OptionStyled = styled.option`
     height: 100%;
 `;
 
-const Modal = ({ children, switchModalAgregarTarjeta }) => {
-    return <ModalStyled switchModalAgregarTarjeta={switchModalAgregarTarjeta}>{children}</ModalStyled>;
+const Modal = ({ children, switchModal}) => {
+    return <ModalStyled switchModal={switchModal}>{children}</ModalStyled>;
 };
 
 export const ModalAgregarTarjeta = ({ switchModalAgregarTarjeta, setSwitchModalAgregarTarjeta, userId }) => {
+    const {actualizadorDeDatos} = useDatos();
     const handleClickCerrarModal = () => {
         setSwitchModalAgregarTarjeta(0);
     };
 
-    const handleSubmit = async ({ values }) => {
-        console.log(values);
-    };
+const handleSubmit = async (values) => {
+    
+    try {
+        const result = await supabase.from('tarjetas').insert({
+            nombre: values.nombreCard,
+            userId: values.id,
+            credito: values.creditoCard
+        });
+        actualizadorDeDatos();
+        setSwitchModalAgregarTarjeta(0);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 
     return (
         <Formik
             initialValues={{
                 id: userId,
                 nombreCard: '',
-                creditoCard: '', // Agregamos este campo para manejar el valor seleccionado del tipo de tarjeta
+                creditoCard: true, // Agregamos este campo para manejar el valor seleccionado del tipo de tarjeta
             }}
             validate={values => {
                 const errors = {};
@@ -64,18 +78,18 @@ export const ModalAgregarTarjeta = ({ switchModalAgregarTarjeta, setSwitchModalA
             }}
             onSubmit={(values, { setSubmitting }) => {
                 handleSubmit(values);
-                console.log(values);
+                
             }}
         >
             {({ values, setFieldValue }) => ( // Usamos el render prop para obtener accesso a setFieldValue
-                <Modal switchModalAgregarTarjeta={switchModalAgregarTarjeta}>
+                <Modal switchModal={switchModalAgregarTarjeta}>
                     <ContenedorPSesion>
                         <TextoPrincipalSession> Agregar Tarjeta </TextoPrincipalSession>
                         <FormStyled>
-                            <FieldCampo Texto='Nombre de la tarjeta' ID='nombreCard' Type='text' />
+                            <FieldCampo  setFieldValue={setFieldValue}   Texto='Nombre de la tarjeta' ID='nombreCard' Type='text' />
                             <FieldSelect Texto='Tipo de tarjeta' ID='creditoCard' onChange={(e) => setFieldValue('creditoCard', e.target.value)}>
-                                <OptionStyled value='true'>Crédito</OptionStyled>
-                                <OptionStyled value='false'>Débito</OptionStyled>
+                                <OptionStyled value={true}>Crédito</OptionStyled>
+                                <OptionStyled value={false}>Débito</OptionStyled>
                             </FieldSelect>
                             <ContedorBtns>
                                 <BtnSubmit type="submit">Enviar</BtnSubmit>
@@ -88,3 +102,152 @@ export const ModalAgregarTarjeta = ({ switchModalAgregarTarjeta, setSwitchModalA
         </Formik>
     );
 };
+
+export const ModalModificarTarjeta = ({ switchModalModificarTarjeta, setSwitchModalModificarTarjeta, nombre, tipo, id }) => {
+    const {actualizadorDeDatos, userMeta} = useDatos();
+    const handleClickCerrarModal = () => {
+        setSwitchModalModificarTarjeta(0);
+    };
+
+const handleSubmit = async (values) => {
+    
+    try {
+        const { data, error } = await supabase
+        .from('tarjetas')
+        .update({
+            nombre: values.nombreCard,
+            credito: values.creditoCard
+            })
+        .match({ id: values.id })
+        actualizadorDeDatos();
+        setSwitchModalModificarTarjeta(0);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
+
+    return (
+        <Formik
+        
+            initialValues={{
+                id: id,
+                nombreCard: nombre,
+                creditoCard: tipo, // Agregamos este campo para manejar el valor seleccionado del tipo de tarjeta
+            }}
+            validate={values => {
+                const errors = {};
+                if (!values.nombreCard) {
+                    errors.nombreCard = 'El nombre de la tarjeta es obligatorio';
+                }
+                return errors;
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+                
+                handleSubmit(values);
+            }}
+        >
+            {({ values, setFieldValue }) => ( // Usamos el render prop para obtener accesso a setFieldValue
+                <Modal switchModal={switchModalModificarTarjeta}>
+                    <ContenedorPSesion>
+                        <TextoPrincipalSession> Modifica tu tarjeta </TextoPrincipalSession>
+                        <FormStyled>
+                            <FieldCampo tipoManejo={'toCapital'} setFieldValue={setFieldValue} Texto='Nombre de la tarjeta' ID='nombreCard' Type='text' />
+
+                            <FieldSelect Texto='Tipo de tarjeta' ID='creditoCard' onChange={(e) => setFieldValue('creditoCard', e.target.value)}>
+                            {tipo ? (
+                                <>
+                                    <OptionStyled value={true}>Crédito</OptionStyled>
+                                    <OptionStyled value={false}>Débito</OptionStyled>
+                                </>
+                            ) : (
+                                <>
+                                    <OptionStyled value={false}>Débito</OptionStyled>
+                                    <OptionStyled value={true}>Crédito</OptionStyled>
+                                </>
+                            )}
+                            </FieldSelect>
+                            <ContedorBtns>
+                                <BtnSubmit type="submit">Enviar</BtnSubmit>
+                                <BtnCerrarModal type="button" onClick={handleClickCerrarModal}>Cerrar</BtnCerrarModal>
+                            </ContedorBtns>
+                        </FormStyled>
+                    </ContenedorPSesion>
+                </Modal>
+            )}
+        </Formik>
+    );
+};
+
+export const ModalAgregarSaldo = ({ switchModalAgregarSaldo, setSwitchModalAgregarSaldo, id,nombre }) => {
+    const {actualizadorDeDatos} = useDatos();
+    
+    const handleClickCerrarModal = () => {
+        setSwitchModalAgregarSaldo(0);
+    };
+
+
+const handleSubmit = async (values) => {
+    
+    try {
+        const result = await supabase.from('deudas').insert({
+            id_tarjeta: values.id,
+            fecha: values.fecha,
+            fechadecorte: values.fechadecorte,
+            saldoalafecha: values.saldoalafecha
+           
+
+        });
+       
+        actualizadorDeDatos();
+        setSwitchModalAgregarSaldo(0);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
+    return (
+        <Formik
+            initialValues={{
+                id: id,
+                fecha: new Date,
+                fechadecorte: 22,
+                saldoalafecha: 0
+            }}
+            validate={values => {
+                const errors = {};
+                if (!values.saldoalafecha) {
+                    errors.saldoalafecha = 'Agrega un nuevo saldo';
+                }
+                return errors;
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+                
+                handleSubmit(values);
+                
+                
+            }}
+        >
+            {({ values, setFieldValue }) => ( // Usamos el render prop para obtener accesso a setFieldValue
+                <Modal switchModal={switchModalAgregarSaldo}>
+                    <ContenedorPSesion>
+                        <TextoPrincipalSession> {nombre} </TextoPrincipalSession>
+                        <FormStyled>
+                            <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} Texto='Saldo' ID='saldoalafecha' Type='number' />
+                            <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} min={1} max={32} Texto='Fecha de corte' ID='fechadecorte' Type='number' />
+                            
+                       
+                            <ContedorBtns>
+                                <BtnSubmit type="submit">Enviar</BtnSubmit>
+                                <BtnCerrarModal type="button" onClick={handleClickCerrarModal}>Cerrar</BtnCerrarModal>
+                            </ContedorBtns>
+                        </FormStyled>
+                    </ContenedorPSesion>
+                </Modal>
+            )}
+        </Formik>
+    );
+};
+

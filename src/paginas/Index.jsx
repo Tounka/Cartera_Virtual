@@ -9,25 +9,33 @@ import { ModalAgregarTarjeta } from "../componentes/CompModalCrud.jsx";
 import { useDatos } from "../js/DatosContext.js";
 const Index = () => {
     const data = useDatos();
-    const [user, setUser] = useState(supabase.auth.user());
+    const [user, setUser] = useState(data.userMeta);
+    
     const navigate = useNavigate();
-    const [switchModalAgregarTarjeta, setSwitchModalAgregarTarjeta] = useState(1);
+    const [switchModalAgregarTarjeta, setSwitchModalAgregarTarjeta] = useState(0);
+    
     useEffect(() =>{
         if(!user){
             
-            navigate('/');
+                navigate('/');
+             
+            
+           
         }else{
-            console.log(user)
+          
         }
     }, [user]);
-  
+
+
+    
+    
     return(
         <>
-        <ModalAgregarTarjeta userId={user?.id} switchModalAgregarTarjeta={switchModalAgregarTarjeta} setSwitchModalAgregarTarjeta={setSwitchModalAgregarTarjeta} ></ModalAgregarTarjeta>
-        <Header usuario = {user?.user_metadata.Nombre}  setSwitchModalAgregarTarjeta={setSwitchModalAgregarTarjeta}/>
+        <ModalAgregarTarjeta userId={user?.sub} switchModalAgregarTarjeta={switchModalAgregarTarjeta} setSwitchModalAgregarTarjeta={setSwitchModalAgregarTarjeta}  ></ModalAgregarTarjeta>
+        <Header usuario = {user?.Nombre}  setSwitchModalAgregarTarjeta={setSwitchModalAgregarTarjeta}/>
         <DisplayPrincipal>
             <SCardTarjetas />
-            <Starjetas Data = {data.Tarjetas} />
+            <Starjetas tarjetas = {data.cardMeta} />
             
         </DisplayPrincipal>
         </>

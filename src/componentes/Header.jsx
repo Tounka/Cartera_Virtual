@@ -12,7 +12,8 @@ export const BotonLogOutStyled = styled.button`
     top: 0;
     width: 20%;
     height: 100%;
-    
+    font-size: 18px;
+
     background-color: var(--colorPv5);
     border:none;
     cursor: pointer;
@@ -33,7 +34,7 @@ export const Header = ({usuario, setSwitchModalAgregarTarjeta}) =>{
         <ContenedorHeader>
             <BotonLogOutStyled onClick= {() =>handleSingOut() }>Salir</BotonLogOutStyled>
             <> Hola {usuario} </>
-            <BotonLogOutStyled onClick={() => handleModalAddCard() }>Actualizar Datos</BotonLogOutStyled>
+            <BotonLogOutStyled onClick={() => handleModalAddCard() }>Agregar tarjeta</BotonLogOutStyled>
         </ContenedorHeader>
     )
 }

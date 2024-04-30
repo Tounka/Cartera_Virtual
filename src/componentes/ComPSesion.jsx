@@ -122,11 +122,36 @@ const SelectStyled = styled.select`
     
 `
 
-export const FieldCampo = ({Texto,ID , Type='text'}) => {
+export const FieldCampo = ({Texto,ID , Type='text', min, max, setFieldValue, tipoManejo}) => {
+    const handleChange = (event) =>{
+        
+            
+                const { name, value } = event.target;
+                let newValue = value;
+            
+                if (tipoManejo === 'noZero') {
+                    newValue = value.replace(/^0+/, '');
+                } 
+                else if(tipoManejo === 'toCapital') {
+                    newValue = value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+                }
+              
+            
+                setFieldValue(name, newValue);
+            
+      
+         
+        
+
+    }
     return(
         <ContenedorField>
             <CFieldTexto htmlFor={ID}>{Texto}</CFieldTexto>
-            <CField id={ID} type={Type} name={ID} placeholder={`Ingresa tu ${Texto}`}/>
+            {min !== undefined && max !== undefined ? (
+                <CField onChange={handleChange} min={min} max={max} id={ID} type={Type} name={ID} placeholder={`Ingresa tu ${Texto}`}/>
+            ) : (
+                <CField onChange={handleChange} id={ID} type={Type} name={ID} placeholder={`Ingresa tu ${Texto}`}/>
+            )}
             <ErrorMessage name={ID} component="div" />
         </ContenedorField>
     )
@@ -142,6 +167,18 @@ export const FieldSelect = ({ Texto, ID, children, onChange }) => {
     );
 };
 
+export const DateInput = ({ Texto, ID, dateDefault, type}) => {
+    return (
+      <div>
+        <label htmlFor={ID}>{Texto}</label>
+        <input 
+          type={type} 
+          value={dateDefault} 
+          
+        />
+      </div>
+    );
+  };
 
 export const SessionLogUp = ({setUser2,setSwitchSeccion}) =>{
     const navigate = useNavigate();
@@ -153,7 +190,7 @@ export const SessionLogUp = ({setUser2,setSwitchSeccion}) =>{
                 email: values.Correo,
                 password: values.Password,
                 options: {
-                    emailRedirectTo: 'http://localhost:3000/Cartera' 
+                    emailRedirectTo: 'http://localhost:3000' 
                 }
                 },{
                     data: {
@@ -162,7 +199,7 @@ export const SessionLogUp = ({setUser2,setSwitchSeccion}) =>{
                       }
                 }
             )
-            console.log(data)
+            
             console.log('Inicio de sesión exitoso');
 
         } catch (error) {
@@ -191,7 +228,7 @@ export const SessionLogUp = ({setUser2,setSwitchSeccion}) =>{
             }}
             onSubmit= {(values, { setSubmitting }) => {
                 handleSubmit(values);
-                console.log(values)
+               
                
                 //if(values.Password == 1234){
                 //    console.log('contrasena correcta');
@@ -267,23 +304,22 @@ export const SessionLogIn = ({setSwitchSeccion }) =>{
             }}
             onSubmit= {(values, { setSubmitting }) => {
                 handleSubmit(values);
-                console.log(values)
+                
                
        
             }}
         >
-            <ContenedorPSesion>
-            <SwitchSeccion onClick={() => handleClickSwitchSeccion()}>Crear cuenta</SwitchSeccion>
-            <TextoPrincipalSession> Inicia sesión </TextoPrincipalSession>
-            <FormStyled>
-                
-                <FieldCampo Texto= 'Correo' ID='Correo' Type='email' />
-                <FieldCampo Texto= 'Contraseña' ID='Password' Type='password' />
-                <BtnSubmit > Enviar </BtnSubmit>
-            
-            </FormStyled>
-
-            </ContenedorPSesion>
+            {({ setFieldValue }) => (
+                <ContenedorPSesion>
+                    <SwitchSeccion onClick={handleClickSwitchSeccion}>Crear cuenta</SwitchSeccion>
+                    <TextoPrincipalSession> Inicia sesión </TextoPrincipalSession>
+                    <FormStyled>
+                        <FieldCampo Texto="Correo" ID="Correo" Type="email" setFieldValue={setFieldValue} />
+                        <FieldCampo Texto="Contraseña" ID="Password" Type="password" setFieldValue={setFieldValue} />
+                        <BtnSubmit> Enviar </BtnSubmit>
+                    </FormStyled>
+                </ContenedorPSesion>
+            )}
         </Formik>
         
     )

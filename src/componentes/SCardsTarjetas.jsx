@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { ContenedorPrincipal } from "./Displays";
+import { useDatos } from "../js/DatosContext";
+import { useEffect } from "react";
+import { useState } from "react";
 
 export const ContenedorCards = styled.div`
     display:flex;
@@ -43,11 +46,52 @@ const CardT = ({nombreTarjeta, cantidad}) => {
 }
 
 export const SCardTarjetas = () => {
+    const {cardMeta} =useDatos();
+
+    const dataMap = cardMeta?.map((dato) =>{
+        let xValue = 0;
+        if(dato.deudas.length){
+            let largoArreglo = dato.deudas.length;
+            xValue = (dato.deudas[largoArreglo-1].saldoalafecha)
+        }
+        let datoFormateado={name: dato.nombre, value:xValue};
+        
+        return(datoFormateado);
+        
+    });
+    console.log(dataMap)
+    const [activos, setActivos] = useState(0);
+    const [pasivos, setPasivos] = useState(0);
+    const [diff, setDiff] = useState(0);
+
+    const cardOperations = () => {
+        let totalActivos = 0;
+        let totalPasivos = 0;
+    
+        dataMap?.forEach(x => {
+            if (x.value > 0) {
+                totalActivos += x.value;
+            } else {
+                totalPasivos -= x.value;
+            }
+        });
+    
+        setActivos(totalActivos);
+        setPasivos(totalPasivos);
+        setDiff(totalActivos - totalPasivos);
+    };
+    
+
+    useEffect(() =>{
+        cardOperations();
+    },[cardMeta])
+
+
     return(
         <ContenedorCards >
-            <CardT nombreTarjeta='Activos' cantidad='cambiar'></CardT>
-            <CardT nombreTarjeta='Pasivos' cantidad='cambiar'></CardT>
-            <CardT nombreTarjeta='Deudas'  cantidad='cambiar'></CardT>
+            <CardT nombreTarjeta='Activos' cantidad={activos}></CardT>
+            <CardT nombreTarjeta='Pasivos' cantidad={pasivos}></CardT>
+            <CardT nombreTarjeta='Deudas'  cantidad={diff}></CardT>
         </ContenedorCards>
     )
 }
