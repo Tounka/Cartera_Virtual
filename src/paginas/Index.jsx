@@ -14,6 +14,7 @@ const Index = () => {
     const navigate = useNavigate();
     const [switchModalAgregarTarjeta, setSwitchModalAgregarTarjeta] = useState(0);
     
+
  
 
 
@@ -22,7 +23,7 @@ const Index = () => {
     return(
         <>
         <ModalAgregarTarjeta userId={user?.sub} switchModalAgregarTarjeta={switchModalAgregarTarjeta} setSwitchModalAgregarTarjeta={setSwitchModalAgregarTarjeta}  ></ModalAgregarTarjeta>
-        <Header usuario = {user?.Nombre}  setSwitchModalAgregarTarjeta={setSwitchModalAgregarTarjeta}/>
+        <Header   setSwitchModalAgregarTarjeta={setSwitchModalAgregarTarjeta}/>
         <DisplayPrincipal>
             <SCardTarjetas />
             <Starjetas tarjetas = {data.cardMeta} />

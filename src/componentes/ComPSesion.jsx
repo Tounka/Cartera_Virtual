@@ -99,7 +99,7 @@ export const TextoPrincipalSession = styled.p`
     font-size: 28px;
     font-weight: bold;
     margin-top: 40px;
-    margin: 15px 0;
+    margin: 15px 0 25px 0;
 `
 
 const SwitchSeccion = styled.div`
@@ -129,6 +129,41 @@ const SelectStyled = styled.select`
     border: 1px black;
     display: grid;
     
+`
+
+const ContenedorMensajeLogIn = styled.div`
+
+   min-height: 30px;
+    width: 100%;
+    
+    
+
+
+`
+const TextoMensajeLogIn = styled.p`
+    @keyframes iniciarMensaje {
+        0% {
+        transform: translateX(0); /* Sin traslación */
+        color: var(--colorRojo); 
+    }
+    25% {
+        transform: translateX(-5px); /* Traslación a la izquierda */
+        color: var(--colorRojo); 
+    }
+    50% {
+        transform: translateX(5px); /* Traslación a la derecha */
+    }
+    75% {
+        transform: translateX(-3px); /* Traslación a la izquierda */
+    }
+    100% {
+        transform: translateX(0); /* Sin traslación, vuelve al estado inicial */
+        color: white; 
+    }
+}
+    padding: 0 20px;
+    text-align:Center;
+    animation: iniciarMensaje 1s forwards;
 `
 
 export const FieldCampo = ({Texto,ID , Type='text', min, max, setFieldValue, tipoManejo}) => {
@@ -189,8 +224,12 @@ export const DateInput = ({ Texto, ID, dateDefault, type}) => {
     );
   };
 
+  
 export const SessionLogUp = ({setUser2,setSwitchSeccion}) =>{
     const navigate = useNavigate();
+    
+
+    const [mensajeRevisarCorreo, setMensajeRevisarCorreo] = useState('');
     const handleSubmit = async (values) => {
         try {
       
@@ -199,7 +238,7 @@ export const SessionLogUp = ({setUser2,setSwitchSeccion}) =>{
                 email: values.Correo,
                 password: values.Password,
                 options: {
-                    emailRedirectTo: 'http://localhost:3000' 
+                    emailRedirectTo: 'https://targety.netlify.app' 
                 }
                 },{
                     data: {
@@ -208,8 +247,32 @@ export const SessionLogUp = ({setUser2,setSwitchSeccion}) =>{
                       }
                 }
             )
-            
-            console.log('Inicio de sesión exitoso');
+
+            if(error){
+                if(mensajeRevisarCorreo){
+                    setMensajeRevisarCorreo('');
+                    setTimeout(() => {
+                        setMensajeRevisarCorreo('Tuvimos un problema, registra bien tu usuario');
+                    }, 500);
+                    
+                }else{
+                    
+                    setMensajeRevisarCorreo('Tuvimos un problema, registra bien tu usuario');
+                }
+                
+            }else{
+                if(mensajeRevisarCorreo){
+                    setMensajeRevisarCorreo('');
+                    setTimeout(() => {
+                        setMensajeRevisarCorreo('Enviamos un correo de confirmación a tu Email');
+                    }, 500);
+                    
+                }else{
+                    
+                    setMensajeRevisarCorreo('Enviamos un correo de confirmación a tu Email');
+                }
+            }
+   
 
         } catch (error) {
             console.error('Error al iniciar sesión:', error.message);
@@ -248,20 +311,25 @@ export const SessionLogUp = ({setUser2,setSwitchSeccion}) =>{
                 //setSubmitting(false);
             }}
         >
+        {({ setFieldValue }) => (
             <ContenedorPSesion>
             <SwitchSeccion onClick={() => handleClickSwitchSeccion()}> <RiLoginCircleLine size={24} /> </SwitchSeccion>
             <TextoPrincipalSession > Registrarse </TextoPrincipalSession>
             <FormStyled>
                 
-                <FieldCampo Texto= 'Correo' ID='Correo' Type='email' />
-                <FieldCampo Texto= 'Primer Nombre' ID='Nombre' Type='text' />
-                <FieldCampo Texto= 'Apellido' ID='Apellido' Type='text' />
-                <FieldCampo Texto= 'Contraseña' ID='Password' Type='password' />
+                <FieldCampo Texto= 'Correo' ID='Correo' Type='email'setFieldValue={setFieldValue} />
+                <FieldCampo Texto= 'Primer Nombre' ID='Nombre' Type='text' setFieldValue={setFieldValue}/>
+                <FieldCampo Texto= 'Apellido' ID='Apellido' Type='text' setFieldValue={setFieldValue}/>
+                <FieldCampo Texto= 'Contraseña' ID='Password' Type='password' setFieldValue={setFieldValue}/>
+
+                <ContenedorMensajeLogIn> {mensajeRevisarCorreo ? <TextoMensajeLogIn>{mensajeRevisarCorreo}</TextoMensajeLogIn>  : ''}</ContenedorMensajeLogIn>
+                
                 <BtnSubmit > Enviar </BtnSubmit>
             
             </FormStyled>
 
             </ContenedorPSesion>
+        )}
         </Formik>
         
     )
@@ -269,6 +337,7 @@ export const SessionLogUp = ({setUser2,setSwitchSeccion}) =>{
 
 export const SessionLogIn = ({setSwitchSeccion }) =>{
     const navigate = useNavigate();
+    const [credencialesIncorrectas, setCredencialesIncorrectas] = useState(false);
     const {userMeta,actualizadorDeUsuario} = useDatos();
     const handleClickSwitchSeccion = ()=>{
         setSwitchSeccion(1);
@@ -289,8 +358,22 @@ export const SessionLogIn = ({setSwitchSeccion }) =>{
             
             if(error){
                 console.log(error);
+                if(credencialesIncorrectas){
+                    setCredencialesIncorrectas(false);
+                    setTimeout(() => {
+                        setCredencialesIncorrectas(true);
+                    }, 500);
+                }else{
+                    setCredencialesIncorrectas(true);
+                }
+                
+                
+                
             }else{
                 actualizadorDeUsuario();
+                setTimeout(()=>{
+                    actualizadorDeUsuario();
+                }, 500)
                     
                 
                     
@@ -332,6 +415,7 @@ export const SessionLogIn = ({setSwitchSeccion }) =>{
                     <FormStyled>
                         <FieldCampo Texto="Correo" ID="Correo" Type="email" setFieldValue={setFieldValue} />
                         <FieldCampo Texto="Contraseña" ID="Password" Type="password" setFieldValue={setFieldValue} />
+                        <ContenedorMensajeLogIn> {credencialesIncorrectas ? <TextoMensajeLogIn>Las credenciales son incorrectas. Por favor, inténtalo de nuevo.</TextoMensajeLogIn>  : ''}</ContenedorMensajeLogIn>
                         <BtnSubmit> Enviar </BtnSubmit>
                     </FormStyled>
                 </ContenedorPSesion>

@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
 import { FaCreditCard } from "react-icons/fa";
 import { RiLogoutCircleLine } from "react-icons/ri";
+import { useDatos } from "../js/DatosContext.js";
 export const BotonLogOutStyled = styled.button`
     
     display:flex;
@@ -23,8 +24,10 @@ export const BotonLogOutStyled = styled.button`
 ` 
 
 
-export const Header = ({usuario, setSwitchModalAgregarTarjeta}) =>{
+export const Header = ({ setSwitchModalAgregarTarjeta}) =>{
     const navigate = useNavigate();
+    const {userMeta} = useDatos();
+    console.log(userMeta);
     const handleSingOut = () =>{
         supabase.auth.signOut();
         navigate('/')
@@ -35,7 +38,7 @@ export const Header = ({usuario, setSwitchModalAgregarTarjeta}) =>{
     return(
         <ContenedorHeader>
             <BotonLogOutStyled onClick= {() =>handleSingOut() }>       <RiLogoutCircleLine size={32}/> </BotonLogOutStyled>
-            <> Hola {usuario} </>
+            <> Hola {userMeta?.Nombre} </>
             <BotonLogOutStyled onClick={() => handleModalAddCard() }>  <FaCreditCard size={32}/>        </BotonLogOutStyled>
         </ContenedorHeader>
     )

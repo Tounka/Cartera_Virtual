@@ -27,7 +27,7 @@ function App() {
    
           
             <Routes >
-              <Route  path='Cartera'  element={<Index />} />
+              <Route  path='/Cartera'  element={<Index />} />
               <Route  path= '/' element={<Session/>} />
             </Routes>
           

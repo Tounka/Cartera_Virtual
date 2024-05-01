@@ -177,7 +177,7 @@ export const Starjetas = ({tarjetas}) =>{
                     <Tarjeta   id={tarjeta.id} nombre={tarjeta.nombre} tipo={tarjeta.credito} key={tarjeta[0]} saldo={tarjeta.deudas} />
                     
                 ))
-                : <p>No hay tarjetas disponibles</p>
+                : <p>Agrega tarjetas dando click al icono de tarjeta :D</p>
                 }
             </ContenedorPadreTarjetas>
             <PieGraph />

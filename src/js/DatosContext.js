@@ -27,9 +27,16 @@ export const DatosContextProvider = ({ children }) => {
         }
     };
 
-    // Efecto para obtener datos del usuario al cargar el componente o al iniciar sesión
     useEffect(() => {
+        // Llama a fetchUserData al cargar el componente
         fetchUserData();
+    }, []);
+
+    useEffect(() => {
+        // Llama a fetchUserData al iniciar sesión
+        if (actUser > 0) {
+            fetchUserData();
+        }
     }, [actUser]);
 
 
