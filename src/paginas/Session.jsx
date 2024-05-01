@@ -6,17 +6,11 @@ import { supabase } from "../supabase/client.js";
 
 const Index = ({ Data }) => {
     const [user, setUser] = useState(supabase.auth.user());
-    
     const [switchSeccion, setSwitchSeccion] = useState(0);
     
     const navigate = useNavigate();
     
-    useEffect(() => {
 
-    if(user){
-      navigate('/Cartera');
-    }
-    }, [navigate]);
 
     return (
         <ContenedorPrincipal>

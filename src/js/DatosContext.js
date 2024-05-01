@@ -15,22 +15,25 @@ export const DatosContextProvider = ({ children }) => {
     const [userMeta, setUserMeta] = useState(null);
     const [cardMeta, setCardMeta] = useState(null);
     const [actDatos, setActDatos] = useState(0);
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const user = supabase.auth.user();
-                if (user) {
-                    setUserMeta(user.user_metadata);
-                    
-                }
-            } catch (error) {
-                console.error("Error al obtener datos de usuario:", error);
+    const [actUser, setActUser] = useState(0);
+    const fetchUserData = async () => {
+        try {
+            const user = supabase.auth.user();
+            if (user) {
+                setUserMeta(user.user_metadata);
             }
-            
-        };
+        } catch (error) {
+            console.error("Error al obtener datos de usuario:", error);
+        }
+    };
 
+    // Efecto para obtener datos del usuario al cargar el componente o al iniciar sesión
+    useEffect(() => {
         fetchUserData();
-    }, []);
+    }, [actUser]);
+
+
+
 
     const getTarjetas = async () => {
         try {
@@ -79,10 +82,13 @@ export const DatosContextProvider = ({ children }) => {
         });
         
       
-    }, [actDatos]);
+    }, [actDatos,userMeta]);
     
     const actualizadorDeDatos = () =>{
         setActDatos(actDatos+1);
+    }
+    const actualizadorDeUsuario = () =>{
+        setActUser(actUser+1);
     }
 
 
@@ -95,7 +101,7 @@ export const DatosContextProvider = ({ children }) => {
     ]);
 
     return (
-        <DatosContext.Provider value={{ userMeta, cardMeta, Deudas, actualizadorDeDatos}}>
+        <DatosContext.Provider value={{ userMeta, cardMeta, Deudas, actualizadorDeDatos, actualizadorDeUsuario}}>
             {children}
         </DatosContext.Provider>
     );

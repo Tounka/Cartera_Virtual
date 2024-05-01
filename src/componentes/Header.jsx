@@ -2,6 +2,8 @@ import { supabase } from "../supabase/client.js"
 import { ContenedorHeader } from "./Displays"
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
+import { FaCreditCard } from "react-icons/fa";
+import { RiLogoutCircleLine } from "react-icons/ri";
 export const BotonLogOutStyled = styled.button`
     
     display:flex;
@@ -32,9 +34,9 @@ export const Header = ({usuario, setSwitchModalAgregarTarjeta}) =>{
     } 
     return(
         <ContenedorHeader>
-            <BotonLogOutStyled onClick= {() =>handleSingOut() }>Salir</BotonLogOutStyled>
+            <BotonLogOutStyled onClick= {() =>handleSingOut() }>       <RiLogoutCircleLine size={32}/> </BotonLogOutStyled>
             <> Hola {usuario} </>
-            <BotonLogOutStyled onClick={() => handleModalAddCard() }>Agregar tarjeta</BotonLogOutStyled>
+            <BotonLogOutStyled onClick={() => handleModalAddCard() }>  <FaCreditCard size={32}/>        </BotonLogOutStyled>
         </ContenedorHeader>
     )
 }

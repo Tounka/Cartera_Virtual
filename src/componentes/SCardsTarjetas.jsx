@@ -14,7 +14,7 @@ export const ContenedorCards = styled.div`
 `
 const CardTStyled = styled(ContenedorPrincipal)`
     
-    height: 150px;
+    height: 120px;
     border-radius: 20px;
     overflow: hidden;
     background-color: var(--colorPv2);

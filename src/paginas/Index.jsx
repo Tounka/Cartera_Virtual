@@ -14,17 +14,7 @@ const Index = () => {
     const navigate = useNavigate();
     const [switchModalAgregarTarjeta, setSwitchModalAgregarTarjeta] = useState(0);
     
-    useEffect(() =>{
-        if(!user){
-            
-                navigate('/');
-             
-            
-           
-        }else{
-          
-        }
-    }, [user]);
+ 
 
 
     

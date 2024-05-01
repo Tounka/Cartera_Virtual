@@ -3,6 +3,10 @@ import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { ModalAgregarSaldo, ModalModificarTarjeta } from "./CompModalCrud";
 import { useState } from "react";
 import { useDatos } from "../js/DatosContext";
+
+const ContenedorPie = styled(ResponsiveContainer)`
+    min-height: 300px;
+`
 const PieGraph = () => {
     const { cardMeta } = useDatos();
     console.log(cardMeta);
@@ -22,7 +26,7 @@ const PieGraph = () => {
 
     const colorArray = ['#ff7675', '#fd79a8', '#a29bfe', '#00b894', '#fdcb6e'];;
     return(
-        <ResponsiveContainer style={{margins: '20px',}} >
+        <ContenedorPie style={{margins: '20px',}} >
             <PieChart  >
                 <Pie 
                 dataKey="value"
@@ -42,7 +46,7 @@ const PieGraph = () => {
           
                 <Tooltip />
             </PieChart>
-        </ResponsiveContainer>
+        </ContenedorPie>
 
     );
 }
@@ -54,9 +58,13 @@ const ContenedorPadre = styled.div`
     @media (max-width: 700px) {
         display:flex;
         flex-direction:column;
+        height: auto;
+        overflow:visible;
     }
     padding: 20px 0;
     min-height: 400px;
+
+   
     gap: 20px;
 `
 const ContenedorPadreTarjeta = styled.div`

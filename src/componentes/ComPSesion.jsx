@@ -3,7 +3,10 @@ import { ContenedorPrincipal } from "./Displays";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import {supabase} from "../supabase/client.js"
-import { Children } from "react";
+import { Children, useEffect, useState } from "react";
+import { useDatos } from "../js/DatosContext.js";
+import { RiLoginCircleLine } from "react-icons/ri";
+import { IoPersonAdd } from "react-icons/io5";
 
 export const ContenedorPSesion = styled(ContenedorPrincipal)`
 position:relative;
@@ -13,7 +16,8 @@ position:relative;
     background-color: var(--colorPv1);
     border-radius: 20px 0 20px 0;
     @media (max-width: 700px) {
-        
+        height: auto;
+        padding: 20px 0;
     }
 `
 export const FormStyled = styled(Form)`
@@ -21,6 +25,7 @@ export const FormStyled = styled(Form)`
     justify-content: space-evenly;
     align-items:center;
     flex-direction: column;
+    gap:20px;
     height: 100%;
     width:100%;
 `
@@ -35,7 +40,7 @@ const ContenedorField = styled.div`
     align-items:center;
     text-align:Center;
     
-    border: solid 1px black;
+    
 
     @media (max-width: 600px){
         flex-direction:column;
@@ -56,7 +61,9 @@ const CField = styled(Field)`
     }
 ` 
 const CFieldTexto = styled.label`
-    background-color: var(--colorGris);
+    background-color: var(--colorPv4);
+    border: none;
+    cursor:pointer;
     min-width: 180px;
     padding: 10px;
     height: 100%;
@@ -92,10 +99,12 @@ export const TextoPrincipalSession = styled.p`
     font-size: 28px;
     font-weight: bold;
     margin-top: 40px;
+    margin: 15px 0;
 `
 
 const SwitchSeccion = styled.div`
     position:absolute;
+    padding: 10px;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -240,7 +249,7 @@ export const SessionLogUp = ({setUser2,setSwitchSeccion}) =>{
             }}
         >
             <ContenedorPSesion>
-            <SwitchSeccion onClick={() => handleClickSwitchSeccion()}>Ya tengo cuenta</SwitchSeccion>
+            <SwitchSeccion onClick={() => handleClickSwitchSeccion()}> <RiLoginCircleLine size={24} /> </SwitchSeccion>
             <TextoPrincipalSession > Registrarse </TextoPrincipalSession>
             <FormStyled>
                 
@@ -260,9 +269,11 @@ export const SessionLogUp = ({setUser2,setSwitchSeccion}) =>{
 
 export const SessionLogIn = ({setSwitchSeccion }) =>{
     const navigate = useNavigate();
+    const {userMeta,actualizadorDeUsuario} = useDatos();
     const handleClickSwitchSeccion = ()=>{
         setSwitchSeccion(1);
     }
+
     const handleSubmit = async (values) => {
         try {
       
@@ -279,7 +290,12 @@ export const SessionLogIn = ({setSwitchSeccion }) =>{
             if(error){
                 console.log(error);
             }else{
-                navigate('/Cartera');
+                actualizadorDeUsuario();
+                    
+                
+                    
+                
+                
             }
             
 
@@ -311,7 +327,7 @@ export const SessionLogIn = ({setSwitchSeccion }) =>{
         >
             {({ setFieldValue }) => (
                 <ContenedorPSesion>
-                    <SwitchSeccion onClick={handleClickSwitchSeccion}>Crear cuenta</SwitchSeccion>
+                    <SwitchSeccion onClick={handleClickSwitchSeccion}> < IoPersonAdd size={24}/></SwitchSeccion>
                     <TextoPrincipalSession> Inicia sesión </TextoPrincipalSession>
                     <FormStyled>
                         <FieldCampo Texto="Correo" ID="Correo" Type="email" setFieldValue={setFieldValue} />

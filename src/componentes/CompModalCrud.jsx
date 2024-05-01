@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { TextoPrincipalSession, FormStyled, FieldCampo, BtnSubmit, ContenedorPSesion, FieldSelect, DateInput } from "./ComPSesion";
 import { supabase } from "../supabase/client";
 import { useDatos } from "../js/DatosContext";
+import { useState } from "react";
 
 const ModalStyled = styled.div`
     position: fixed;
@@ -29,6 +30,8 @@ const BtnCerrarModal = styled(BtnSubmit)`
 const ContedorBtns = styled.div`
     display: flex;
     gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
 `;
 
 const OptionStyled = styled.option`
@@ -105,7 +108,9 @@ const handleSubmit = async (values) => {
 
 export const ModalModificarTarjeta = ({ switchModalModificarTarjeta, setSwitchModalModificarTarjeta, nombre, tipo, id }) => {
     const {actualizadorDeDatos, userMeta} = useDatos();
+    const [textoBtnBorrar, setTextoBtnBorrar] = useState('Borrar');
     const handleClickCerrarModal = () => {
+        setTextoBtnBorrar('Borrar');
         setSwitchModalModificarTarjeta(0);
     };
 
@@ -121,6 +126,36 @@ const handleSubmit = async (values) => {
         .match({ id: values.id })
         actualizadorDeDatos();
         setSwitchModalModificarTarjeta(0);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const handleBorrar = async () => {
+    try {
+        // 1. Eliminar las deudas asociadas a la tarjeta
+        const { data: deudasData, error: deudasError } = await supabase
+            .from('deudas')
+            .delete()
+            .eq('id_tarjeta', id); // Eliminar todas las deudas asociadas a la tarjeta
+
+        if (deudasError) {
+            throw deudasError;
+        }
+
+        // 2. Eliminar la tarjeta
+        const { data, error } = await supabase
+            .from('tarjetas')
+            .delete()
+            .eq('userId', userMeta.sub) // Especifica la igualdad para el usuario
+            .eq('id', id); // Especifica la igualdad para el ID de la tarjeta
+
+        if (error) {
+            throw error;
+        }
+        actualizadorDeDatos();
+        setSwitchModalModificarTarjeta(0);
+        
     } catch (error) {
         console.error(error);
     }
@@ -169,6 +204,7 @@ const handleSubmit = async (values) => {
                             )}
                             </FieldSelect>
                             <ContedorBtns>
+                                <BtnCerrarModal type="button" onClick={handleBorrar}>{textoBtnBorrar}</BtnCerrarModal>
                                 <BtnSubmit type="submit">Enviar</BtnSubmit>
                                 <BtnCerrarModal type="button" onClick={handleClickCerrarModal}>Cerrar</BtnCerrarModal>
                             </ContedorBtns>
