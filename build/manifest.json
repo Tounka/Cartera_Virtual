@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "TargeTy",
+  "name": "TargeTy tu app para administrar tus tarjetas",
   "icons": [
     {
       "src": "iconSmall.jpg",
