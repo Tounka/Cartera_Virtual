@@ -27,7 +27,7 @@ export const BotonLogOutStyled = styled.button`
 export const Header = ({ setSwitchModalAgregarTarjeta}) =>{
     const navigate = useNavigate();
     const {userMeta} = useDatos();
-    console.log(userMeta);
+   
     const handleSingOut = () =>{
         supabase.auth.signOut();
         navigate('/')

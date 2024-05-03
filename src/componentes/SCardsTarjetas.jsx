@@ -59,7 +59,7 @@ export const SCardTarjetas = () => {
         return(datoFormateado);
         
     });
-    console.log(dataMap)
+    
     const [activos, setActivos] = useState(0);
     const [pasivos, setPasivos] = useState(0);
     const [diff, setDiff] = useState(0);

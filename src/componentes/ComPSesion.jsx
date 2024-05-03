@@ -302,13 +302,7 @@ export const SessionLogUp = ({setUser2,setSwitchSeccion}) =>{
                 handleSubmit(values);
                
                
-                //if(values.Password == 1234){
-                //    console.log('contrasena correcta');
-                //    navigate('/Cartera');
-                //    console.log('contrasena 3');
-                //}
-                
-                //setSubmitting(false);
+           
             }}
         >
         {({ setFieldValue }) => (

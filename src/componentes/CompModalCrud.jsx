@@ -54,9 +54,18 @@ const handleSubmit = async (values) => {
     try {
         const result = await supabase.from('tarjetas').insert({
             nombre: values.nombreCard,
-            userId: values.id,
+            userId: userId,
             credito: values.creditoCard
         });
+        const tarjetaId = result.data[0].id;
+
+        const deudaResult = await supabase.from('deudas').insert({
+            id_tarjeta: tarjetaId,
+            fecha: new Date(),
+            fechadecorte: 1, 
+            saldoalafecha: 0
+        });
+        
         actualizadorDeDatos();
         setSwitchModalAgregarTarjeta(0);
     } catch (error) {
@@ -107,7 +116,7 @@ const handleSubmit = async (values) => {
 };
 
 export const ModalModificarTarjeta = ({ switchModalModificarTarjeta, setSwitchModalModificarTarjeta, nombre, tipo, id }) => {
-    const {actualizadorDeDatos, userMeta} = useDatos();
+    const {actualizadorDeDatos, userMeta, cardMeta} = useDatos();
     const [textoBtnBorrar, setTextoBtnBorrar] = useState('Borrar');
     const handleClickCerrarModal = () => {
         setTextoBtnBorrar('Borrar');
@@ -124,41 +133,50 @@ const handleSubmit = async (values) => {
             credito: values.creditoCard
             })
         .match({ id: values.id })
-        actualizadorDeDatos();
-        setSwitchModalModificarTarjeta(0);
-    } catch (error) {
-        console.error(error);
-    }
-};
-
-const handleBorrar = async () => {
-    try {
-        // 1. Eliminar las deudas asociadas a la tarjeta
-        const { data: deudasData, error: deudasError } = await supabase
-            .from('deudas')
-            .delete()
-            .eq('id_tarjeta', id); // Eliminar todas las deudas asociadas a la tarjeta
-
-        if (deudasError) {
-            throw deudasError;
-        }
-
-        // 2. Eliminar la tarjeta
-        const { data, error } = await supabase
-            .from('tarjetas')
-            .delete()
-            .eq('userId', userMeta.sub) // Especifica la igualdad para el usuario
-            .eq('id', id); // Especifica la igualdad para el ID de la tarjeta
-
-        if (error) {
-            throw error;
-        }
+        console.log(data,error)
         actualizadorDeDatos();
         setSwitchModalModificarTarjeta(0);
         
     } catch (error) {
         console.error(error);
     }
+};
+
+const handleBorrar = async () => {
+    if(textoBtnBorrar === 'Borrar'){
+        setTextoBtnBorrar('Seguro?')
+    }else if(textoBtnBorrar=== 'Seguro?'){
+        try {
+            // 1. Eliminar las deudas asociadas a la tarjeta
+            const { data: deudasData, error: deudasError } = await supabase
+                .from('deudas')
+                .delete()
+                .eq('id_tarjeta', id); // Eliminar todas las deudas asociadas a la tarjeta
+    
+            if (deudasError) {
+                throw deudasError;
+            }
+    
+            // 2. Eliminar la tarjeta
+            const { data, error } = await supabase
+                .from('tarjetas')
+                .delete()
+                .eq('userId', userMeta.sub) // Especifica la igualdad para el usuario
+                .eq('id', id); // Especifica la igualdad para el ID de la tarjeta
+    
+            if (error) {
+                throw error;
+            }
+            console.log('12312',cardMeta);
+            actualizadorDeDatos();
+            console.log(cardMeta);
+            setSwitchModalModificarTarjeta(0);
+            
+        } catch (error) {
+            console.error(error);
+        }
+    }
+  
 };
 
 
@@ -216,7 +234,23 @@ const handleBorrar = async () => {
     );
 };
 
-export const ModalAgregarSaldo = ({ switchModalAgregarSaldo, setSwitchModalAgregarSaldo, id,nombre }) => {
+export const ModalAgregarSaldo = ({ switchModalAgregarSaldo, setSwitchModalAgregarSaldo, id,nombre, saldo }) => {
+    const getSaldo =  () => {
+        
+        if(saldo.length ){
+            const largoArreglo = saldo.length;
+            
+            return(saldo[largoArreglo-1].saldoalafecha);
+            
+    
+        }else{
+            
+            return(0);
+            
+        }
+    }
+
+    const saldoRam = getSaldo();
     const {actualizadorDeDatos} = useDatos();
     
     const handleClickCerrarModal = () => {
@@ -235,6 +269,7 @@ const handleSubmit = async (values) => {
            
 
         });
+        
        
         actualizadorDeDatos();
         setSwitchModalAgregarSaldo(0);
@@ -250,7 +285,7 @@ const handleSubmit = async (values) => {
                 id: id,
                 fecha: new Date,
                 fechadecorte: 22,
-                saldoalafecha: 0
+                saldoalafecha: getSaldo()
             }}
             validate={values => {
                 const errors = {};

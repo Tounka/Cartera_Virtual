@@ -6,17 +6,23 @@ import { useDatos } from "../js/DatosContext";
 
 const ContenedorPie = styled(ResponsiveContainer)`
     min-height: 300px;
+    max-height: 300px;
 `
-const PieGraph = () => {
-    const { cardMeta } = useDatos();
-    console.log(cardMeta);
+const PieGraph = ({tarjetas, titulo}) => {
+    
 
-    const dataMap = cardMeta?.map((dato) => {
+
+    const dataMap = tarjetas?.map((dato) => {
+        
         let xValue = 0;
         if (dato.deudas.length) {
             let largoArreglo = dato.deudas.length;
             xValue = dato.deudas[largoArreglo - 1].saldoalafecha;
+            if(xValue <= 0){
+                xValue = xValue * -1;
+            }
         }
+        
         let datoFormateado = { name: dato.nombre, value: xValue };
 
         return datoFormateado;
@@ -26,14 +32,19 @@ const PieGraph = () => {
 
     const colorArray = ['#ff7675', '#fd79a8', '#a29bfe', '#00b894', '#fdcb6e'];;
     return(
-        <ContenedorPie style={{margins: '20px',}} >
+        
+            
+
+            <ContenedorPie style={{margins: '20px',}} >
+            <TitularSTarjetas>{titulo}</TitularSTarjetas>
+
             <PieChart  >
                 <Pie 
                 dataKey="value"
                 isAnimationActive={true}
                 data={dataMap}
-              
-                outerRadius={80}
+            
+                outerRadius={100}
                 innerRadius={40}
                 fill="#8884d8"
                 label
@@ -43,10 +54,12 @@ const PieGraph = () => {
                         <Cell key={`cell-${index}`} fill={colorArray[index % colorArray.length]} />
                     ) )}
                 </Pie>
-          
+
                 <Tooltip />
             </PieChart>
-        </ContenedorPie>
+            </ContenedorPie>
+        
+      
 
     );
 }
@@ -134,15 +147,19 @@ const ContenedorTarjeta = styled.div`
     }
 `
 const Tarjeta = ({nombre,tipo,id, saldo = 0}) =>{
-    
+   
     const getSaldo =  () => {
         
         if(saldo.length ){
             const largoArreglo = saldo.length;
+            
             return('$' + saldo[largoArreglo-1].saldoalafecha);
+            
     
         }else{
+            
             return('$' + 0);
+            
         }
     }
    
@@ -156,7 +173,7 @@ const Tarjeta = ({nombre,tipo,id, saldo = 0}) =>{
     }
     return(
         <ContenedorPadreTarjeta>
-            <ModalAgregarSaldo id={id} tipo={tipo} nombre={nombre} setSwitchModalAgregarSaldo={setSwitchModalAgregarSaldo} switchModalAgregarSaldo={switchModalAgregarSaldo}  />
+            <ModalAgregarSaldo saldo={saldo} id={id} tipo={tipo} nombre={nombre} setSwitchModalAgregarSaldo={setSwitchModalAgregarSaldo} switchModalAgregarSaldo={switchModalAgregarSaldo}  />
             <ModalModificarTarjeta nombreTarjeta={nombre} id={id} tipo={tipo} nombre={nombre} setSwitchModalModificarTarjeta={setSwitchModalModificarTarjeta} switchModalModificarTarjeta={switchModalModificarTarjeta}   ></ModalModificarTarjeta>
             
             <ContenedorTarjeta onClick={() => handleClickModalModificarTarjeta()} >{nombre}</ContenedorTarjeta>
@@ -164,26 +181,27 @@ const Tarjeta = ({nombre,tipo,id, saldo = 0}) =>{
         </ContenedorPadreTarjeta>
     )
 }
+export const TitularSTarjetas = styled.h3`
+    color: var(--colorPv2);
+    width: 100%;
+    text-align:center;
+`
 
-export const Starjetas = ({tarjetas}) =>{
-    
-    return(
-        <ContenedorPadre>
-            <ContenedorPadreTarjetas>
-                {
-                tarjetas && tarjetas.length > 0  ?
-                tarjetas.map((tarjeta) => (
-
-                    <Tarjeta   id={tarjeta.id} nombre={tarjeta.nombre} tipo={tarjeta.credito} key={tarjeta[0]} saldo={tarjeta.deudas} />
-                    
-                ))
-                : <p>Agrega tarjetas dando click al icono de tarjeta :D</p>
-                }
-            </ContenedorPadreTarjetas>
-            <PieGraph />
-     
-           
-        </ContenedorPadre>
-
-    )
+export const Starjetas = ({ tarjetas, titulo }) => {
+    return (
+        tarjetas != '' ?
+            <ContenedorPadre>
+                <ContenedorPadreTarjetas>
+                    {
+                        tarjetas && tarjetas.length > 0 ?
+                            tarjetas.map((tarjeta) => (
+                                <Tarjeta id={tarjeta.id} nombre={tarjeta.nombre} tipo={tarjeta.credito} key={tarjeta.id} saldo={tarjeta.deudas} />
+                            ))
+                            : <TitularSTarjetas>Agrega tarjetas dando click al icono de tarjeta :D</TitularSTarjetas>
+                    }
+                </ContenedorPadreTarjetas>
+                <PieGraph tarjetas={tarjetas} titulo={titulo} />
+            </ContenedorPadre>
+            : null
+    );
 }

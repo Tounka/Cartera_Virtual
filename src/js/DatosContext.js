@@ -28,12 +28,11 @@ export const DatosContextProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        // Llama a fetchUserData al cargar el componente
         fetchUserData();
     }, []);
 
     useEffect(() => {
-        // Llama a fetchUserData al iniciar sesión
+        // al iniciar sesión se llama
         if (actUser > 0) {
             fetchUserData();
         }
