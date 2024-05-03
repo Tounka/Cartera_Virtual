@@ -91,7 +91,7 @@ export const SCardTarjetas = () => {
         <ContenedorCards >
             <CardT nombreTarjeta='Activos' cantidad={activos}></CardT>
             <CardT nombreTarjeta='Pasivos' cantidad={pasivos}></CardT>
-            <CardT nombreTarjeta='Deudas'  cantidad={diff}></CardT>
+            <CardT nombreTarjeta='Deudas'  cantidad={diff.toFixed(2)}></CardT>
         </ContenedorCards>
     )
 }
