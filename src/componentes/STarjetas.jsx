@@ -172,6 +172,7 @@ const Tarjeta = ({nombre,tipo,id, saldo = 0}) =>{
         setSwitchModalAgregarSaldo(1);
     }
     return(
+        
         <ContenedorPadreTarjeta>
             <ModalAgregarSaldo saldo={saldo} id={id} tipo={tipo} nombre={nombre} setSwitchModalAgregarSaldo={setSwitchModalAgregarSaldo} switchModalAgregarSaldo={switchModalAgregarSaldo}  />
             <ModalModificarTarjeta nombreTarjeta={nombre} id={id} tipo={tipo} nombre={nombre} setSwitchModalModificarTarjeta={setSwitchModalModificarTarjeta} switchModalModificarTarjeta={switchModalModificarTarjeta}   ></ModalModificarTarjeta>
@@ -181,16 +182,28 @@ const Tarjeta = ({nombre,tipo,id, saldo = 0}) =>{
         </ContenedorPadreTarjeta>
     )
 }
+export const TitularSTarjetasConMargin = styled.h3`
+    color: var(--colorPv2);
+    width: 100%;
+    text-align:center;
+    @media(min-width: 701px){
+        display:none;
+    }
+`
 export const TitularSTarjetas = styled.h3`
     color: var(--colorPv2);
     width: 100%;
     text-align:center;
+    @media(max-width: 700px){
+        display:none;
+    }
 `
 
 export const Starjetas = ({ tarjetas, titulo }) => {
     return (
         tarjetas != '' ?
             <ContenedorPadre>
+                <TitularSTarjetasConMargin>{titulo}</TitularSTarjetasConMargin>
                 <ContenedorPadreTarjetas>
                     {
                         tarjetas && tarjetas.length > 0 ?
