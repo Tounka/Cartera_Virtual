@@ -1,15 +1,33 @@
 import styled from "styled-components";
 import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { ModalAgregarSaldo, ModalModificarTarjeta } from "./CompModalCrud";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDatos } from "../js/DatosContext";
 
 const ContenedorPie = styled(ResponsiveContainer)`
     min-height: 300px;
+    height:auto;
     max-height: 300px;
+    *{
+        overflow:visible;
+    }
 `
+
 const PieGraph = ({tarjetas, titulo}) => {
-    
+    const [tamanoGrafica, setTamanoGrafica] = useState([80, 40]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            // Actualizar el tamaño de la gráfica según el ancho de la ventana
+            const nuevoTamanoGrafica = window.innerWidth < 400 ? [70, 0] : [80, 40];
+            setTamanoGrafica(nuevoTamanoGrafica);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
 
     const dataMap = tarjetas?.map((dato) => {
@@ -17,35 +35,43 @@ const PieGraph = ({tarjetas, titulo}) => {
         let xValue = 0;
         if (dato.deudas.length) {
             let largoArreglo = dato.deudas.length;
-            xValue = dato.deudas[largoArreglo - 1].saldoalafecha;
-            if(xValue <= 0){
-                xValue = xValue * -1;
+            if(largoArreglo >= 1){
+                xValue = dato.deudas[largoArreglo - 1].saldoalafecha;
+                if(xValue <= 0){
+                    xValue = xValue * -1;
+                }
             }
+            
+         
         }
         
         let datoFormateado = { name: dato.nombre, value: xValue };
-
+ 
+        
         return datoFormateado;
 
     }) || [];
 
-
+   
+  
+        
+    
     const colorArray = ['#ff7675', '#fd79a8', '#a29bfe', '#00b894', '#fdcb6e'];;
     return(
         
             
-
-            <ContenedorPie style={{margins: '20px',}} >
-            <TitularSTarjetas>{titulo}</TitularSTarjetas>
+                
+                <ContenedorPie style={{margins: '20px', overflow:'visible'}} >
+           
 
             <PieChart  >
                 <Pie 
                 dataKey="value"
                 isAnimationActive={true}
                 data={dataMap}
-            
-                outerRadius={100}
-                innerRadius={40}
+                
+                outerRadius={tamanoGrafica[0]}
+                innerRadius={tamanoGrafica[1]}
                 fill="#8884d8"
                 label
                 
@@ -58,6 +84,10 @@ const PieGraph = ({tarjetas, titulo}) => {
                 <Tooltip />
             </PieChart>
             </ContenedorPie>
+                
+            
+
+            
         
       
 
@@ -67,9 +97,10 @@ const PieGraph = ({tarjetas, titulo}) => {
 const ContenedorPadre = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
-
+    align-items:center;
     @media (max-width: 700px) {
         display:flex;
+        width:100%;
         flex-direction:column;
         height: auto;
         overflow:visible;
@@ -82,7 +113,10 @@ const ContenedorPadre = styled.div`
 `
 const ContenedorPadreTarjeta = styled.div`
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 2fr;
+    @media (max-width: 500px) {
+        grid-template-columns: 1fr 1fr; 
+    }
 
     gap: 20px;
 
@@ -93,15 +127,24 @@ const ContenedorPadreTarjetas = styled.div`
     flex-direction:column;
     justify-content: center;
     gap: 15px;
+    width:100%;
 
+`
+const ContenedorDerechoPieGr = styled.div`
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    width:100%;
 `
 const ContenedorTarjeta = styled.div`
     width: 100%;
     height: 45px;
     color:white;
+    
     font-weight:bold;
     display:flex;
     align-items:center;
+    cursor:pointer;
     justify-content:${props => props.dinero ? 'right' : 'center'} ;
     position: relative; 
     padding: ${props => props.dinero ? '0 10px 0 20px' : ''} ; 
@@ -145,6 +188,9 @@ const ContenedorTarjeta = styled.div`
         font-size: 1.1em;
         transition: font-size .3s;
     }
+    @media (max-width:600px){
+        font-size:16px;
+    }
 `
 const Tarjeta = ({nombre,tipo,id, saldo = 0}) =>{
    
@@ -152,8 +198,12 @@ const Tarjeta = ({nombre,tipo,id, saldo = 0}) =>{
         
         if(saldo.length ){
             const largoArreglo = saldo.length;
+            if(largoArreglo >= 1){
+                return('$' + saldo[largoArreglo-1].saldoalafecha);
+            }else{
+                return('$' + 0); 
+            }
             
-            return('$' + saldo[largoArreglo-1].saldoalafecha);
             
     
         }else{
@@ -213,7 +263,13 @@ export const Starjetas = ({ tarjetas, titulo }) => {
                             : <TitularSTarjetas>Agrega tarjetas dando click al icono de tarjeta :D</TitularSTarjetas>
                     }
                 </ContenedorPadreTarjetas>
-                <PieGraph tarjetas={tarjetas} titulo={titulo} />
+                        <ContenedorDerechoPieGr>
+                            <TitularSTarjetas>{titulo}</TitularSTarjetas>
+                            <PieGraph tarjetas={tarjetas} titulo={titulo} />
+                        </ContenedorDerechoPieGr>
+                        
+                 
+                
             </ContenedorPadre>
             : null
     );

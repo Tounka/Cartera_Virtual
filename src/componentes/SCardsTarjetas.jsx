@@ -34,6 +34,7 @@ const CardTopStyled = styled.div`
 `
 const CardBottomStyled = styled(CardTopStyled)`
     height: 100%;
+    min-height:40px;
     background-color: transparent;
 `
 const CardT = ({nombreTarjeta, cantidad}) => {
@@ -52,7 +53,12 @@ export const SCardTarjetas = () => {
         let xValue = 0;
         if(dato.deudas.length){
             let largoArreglo = dato.deudas.length;
-            xValue = (dato.deudas[largoArreglo-1].saldoalafecha)
+            if (largoArreglo>= 1){
+                xValue = (dato.deudas[largoArreglo-1].saldoalafecha)
+            }else{
+                return(0); 
+            }
+            
         }
         let datoFormateado={name: dato.nombre, value:xValue};
         

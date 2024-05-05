@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 export const DisplayPrincipal = styled.div`
     width: 100%;
-    height: 100%;
+    height: auto;
     padding: 10px 20px;
 `
 export const ContenedorPrincipal =styled.div`

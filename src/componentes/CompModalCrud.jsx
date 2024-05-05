@@ -19,7 +19,7 @@ const ModalStyled = styled.div`
     align-items: center;
 `;
 
-const BtnCerrarModal = styled(BtnSubmit)`
+export const BtnCerrarModal = styled(BtnSubmit)`
     background-color: var(--colorRojo);
     @media (max-width: 425px) {
         width: 100px;
@@ -27,7 +27,7 @@ const BtnCerrarModal = styled(BtnSubmit)`
     }
 `;
 
-const ContedorBtns = styled.div`
+export const ContedorBtns = styled.div`
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
@@ -39,7 +39,7 @@ const OptionStyled = styled.option`
     height: 100%;
 `;
 
-const Modal = ({ children, switchModal}) => {
+export const Modal = ({ children, switchModal}) => {
     return <ModalStyled switchModal={switchModal}>{children}</ModalStyled>;
 };
 
@@ -239,8 +239,12 @@ export const ModalAgregarSaldo = ({ switchModalAgregarSaldo, setSwitchModalAgreg
         
         if(saldo.length ){
             const largoArreglo = saldo.length;
+            if (largoArreglo>= 1){
+                return(saldo[largoArreglo-1].saldoalafecha);
+            }else{
+                return(0); 
+            }
             
-            return(saldo[largoArreglo-1].saldoalafecha);
             
     
         }else{
@@ -263,14 +267,14 @@ const handleSubmit = async (values) => {
     try {
         const result = await supabase.from('deudas').insert({
             id_tarjeta: values.id,
-            fecha: values.fecha,
+            fecha: `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date().getDate().toString().padStart(2, '0')}`,
             fechadecorte: values.fechadecorte,
             saldoalafecha: values.saldoalafecha
            
 
         });
         
-       
+        console.log(result);
         actualizadorDeDatos();
         setSwitchModalAgregarSaldo(0);
     } catch (error) {
@@ -283,7 +287,7 @@ const handleSubmit = async (values) => {
         <Formik
             initialValues={{
                 id: id,
-                fecha: new Date,
+                fecha: new Date(),
                 fechadecorte: 22,
                 saldoalafecha: getSaldo()
             }}

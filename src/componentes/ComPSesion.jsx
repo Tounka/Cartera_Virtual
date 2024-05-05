@@ -10,7 +10,9 @@ import { IoPersonAdd } from "react-icons/io5";
 
 export const ContenedorPSesion = styled(ContenedorPrincipal)`
 position:relative;
-    height: 500px;
+    min-height: 500px;
+    height:auto;
+    padding: 20px 0;
     width: 90%;
     max-width: 700px;
     background-color: var(--colorPv1);
@@ -31,7 +33,8 @@ export const FormStyled = styled(Form)`
 `
 const ContenedorField = styled.div`
     min-height: 60px;
-    
+    height:80px;
+    max-height:auto;
     width: 90%;
     background-color:white;
     border-radius: 20px;
