@@ -22,7 +22,11 @@ const Index = () => {
     const [tarjetasPasivos, setTarjetasPasivos] = useState();
     const navigate = useNavigate();
     const [switchModalAgregarTarjeta, setSwitchModalAgregarTarjeta] = useState(0);
-    
+    const {actualizadorDeDatos} = useDatos();
+
+    useEffect(()=>{
+        actualizadorDeDatos();
+    },[]);
 
     useEffect(() => {
        
@@ -35,7 +39,6 @@ const Index = () => {
                     return tarjeta;
                 }else{
                 const ultimaDeuda = tarjeta.deudas[tarjeta.deudas.length - 1]; // Accede al último elemento del arreglo de deudas
-                console.log('------------',tarjeta)
                     return ultimaDeuda.saldoalafecha < 0; // Verifica si el saldo de la última deuda es menor o igual a cero
                 }
                 
@@ -76,11 +79,11 @@ const Index = () => {
             <SCardTarjetas />
             {tarjetasPasivos && tarjetasActivos ? ( 
                 <>
-                          <>
+                <>
                 <Starjetas tarjetas = {tarjetasPasivos} titulo={'Créditos'} />
                 <Starjetas tarjetas = {tarjetasActivos} titulo={'Activos'} />
                 </>
-                    <DisplayPrincipal >
+                <DisplayPrincipal >
                     <SeccionBtnFecha />
                 </DisplayPrincipal>
                 </>
