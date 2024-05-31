@@ -95,8 +95,8 @@ export const SCardTarjetas = () => {
 
     return(
         <ContenedorCards >
-            <CardT nombreTarjeta='Activos' cantidad={activos}></CardT>
-            <CardT nombreTarjeta='Pasivos' cantidad={pasivos}></CardT>
+            <CardT nombreTarjeta='Activos' cantidad={activos.toFixed(2)}></CardT>
+            <CardT nombreTarjeta='Pasivos' cantidad={pasivos.toFixed(2)}></CardT>
             <CardT nombreTarjeta='Deudas'  cantidad={diff.toFixed(2)}></CardT>
         </ContenedorCards>
     )

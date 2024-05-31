@@ -3,6 +3,7 @@ import { SessionLogIn, SessionLogUp } from "../componentes/ComPSesion";
 import { useEffect, useState } from "react";
 import {useNavigate } from 'react-router-dom';
 import { supabase } from "../supabase/client.js";
+import { useDatos } from "../js/DatosContext.js";
 
 const Index = ({ Data }) => {
     const [user, setUser] = useState(supabase.auth.user());
