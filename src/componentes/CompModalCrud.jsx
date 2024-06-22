@@ -55,7 +55,8 @@ const handleSubmit = async (values) => {
         const result = await supabase.from('tarjetas').insert({
             nombre: values.nombreCard,
             userId: userId,
-            credito: values.creditoCard
+            credito: values.creditoCard,
+            msi: values.msi
         });
         const tarjetaId = result.data[0].id;
 
@@ -73,13 +74,16 @@ const handleSubmit = async (values) => {
     }
 };
 
+    const [boolMsi , setBoolMsi] = useState(true);
 
+  
     return (
         <Formik
             initialValues={{
                 id: userId,
                 nombreCard: '',
-                creditoCard: true, // Agregamos este campo para manejar el valor seleccionado del tipo de tarjeta
+                creditoCard: true, // Valor por defecto para crédito
+                msi: false, // Valor por defecto para meses sin intereses
             }}
             validate={values => {
                 const errors = {};
@@ -99,10 +103,23 @@ const handleSubmit = async (values) => {
                         <TextoPrincipalSession> Agregar Tarjeta </TextoPrincipalSession>
                         <FormStyled>
                             <FieldCampo  setFieldValue={setFieldValue}   Texto='Nombre de la tarjeta' ID='nombreCard' Type='text' />
-                            <FieldSelect Texto='Tipo de tarjeta' ID='creditoCard' onChange={(e) => setFieldValue('creditoCard', e.target.value)}>
+                            <FieldSelect Texto='Tipo de tarjeta' ID='creditoCard' 
+                               onChange={(e) => {
+                                setFieldValue('creditoCard', e.target.value);
+                                setBoolMsi(!boolMsi);
+                                
+                            }}
+                        >
                                 <OptionStyled value={true}>Crédito</OptionStyled>
                                 <OptionStyled value={false}>Débito</OptionStyled>
                             </FieldSelect>
+                                {boolMsi ? (
+                                <FieldSelect Texto='Pago a MSI' ID='msi' onChange={(e) => setFieldValue('msi', e.target.value)}>
+                                    <OptionStyled value={false}>No</OptionStyled>
+                                    <OptionStyled value={true}>Sí</OptionStyled>
+                                </FieldSelect>
+                            ) : ''}
+                            
                             <ContedorBtns>
                                 <BtnSubmit type="submit">Enviar</BtnSubmit>
                                 <BtnCerrarModal type="button" onClick={handleClickCerrarModal}>Cerrar</BtnCerrarModal>
@@ -115,7 +132,7 @@ const handleSubmit = async (values) => {
     );
 };
 
-export const ModalModificarTarjeta = ({ switchModalModificarTarjeta, setSwitchModalModificarTarjeta, nombre, tipo, id }) => {
+export const ModalModificarTarjeta = ({ switchModalModificarTarjeta, setSwitchModalModificarTarjeta, nombre, tipo, id, msi }) => {
     const {actualizadorDeDatos, userMeta, cardMeta} = useDatos();
     const [textoBtnBorrar, setTextoBtnBorrar] = useState('Borrar');
     const handleClickCerrarModal = () => {
@@ -130,7 +147,8 @@ const handleSubmit = async (values) => {
         .from('tarjetas')
         .update({
             nombre: values.nombreCard,
-            credito: values.creditoCard
+            credito: values.creditoCard,
+            msi: values.msi
             })
         .match({ id: values.id })
         console.log(data,error)
@@ -188,6 +206,7 @@ const handleBorrar = async () => {
                 id: id,
                 nombreCard: nombre,
                 creditoCard: tipo, // Agregamos este campo para manejar el valor seleccionado del tipo de tarjeta
+                msi: msi
             }}
             validate={values => {
                 const errors = {};
@@ -221,6 +240,23 @@ const handleBorrar = async () => {
                                 </>
                             )}
                             </FieldSelect>
+
+                            <FieldSelect Texto='Pago a MSI' ID='msi' onChange={(e) => setFieldValue('msi', e.target.value)}>
+        
+                              {msi ? (
+                                <>
+                                    <OptionStyled value={true}>Sí</OptionStyled>
+                                    <OptionStyled value={false}>No</OptionStyled>
+                                </>
+                            ) : (
+                                <>
+                                   <OptionStyled value={false}>No</OptionStyled>
+                                    <OptionStyled value={true}>Sí</OptionStyled>
+                                </>
+                            )}
+                                
+                            </FieldSelect>
+                         
                             <ContedorBtns>
                                 <BtnCerrarModal type="button" onClick={handleBorrar}>{textoBtnBorrar}</BtnCerrarModal>
                                 <BtnSubmit type="submit">Enviar</BtnSubmit>

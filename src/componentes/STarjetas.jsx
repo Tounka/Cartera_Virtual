@@ -192,7 +192,7 @@ const ContenedorTarjeta = styled.div`
         font-size:16px;
     }
 `
-const Tarjeta = ({nombre,tipo,id, saldo = 0}) =>{
+const Tarjeta = ({nombre,tipo,id, msi, saldo = 0}) =>{
    
     const getSaldo =  () => {
         
@@ -225,7 +225,7 @@ const Tarjeta = ({nombre,tipo,id, saldo = 0}) =>{
         
         <ContenedorPadreTarjeta>
             <ModalAgregarSaldo saldo={saldo} id={id} tipo={tipo} nombre={nombre} setSwitchModalAgregarSaldo={setSwitchModalAgregarSaldo} switchModalAgregarSaldo={switchModalAgregarSaldo}  />
-            <ModalModificarTarjeta nombreTarjeta={nombre} id={id} tipo={tipo} nombre={nombre} setSwitchModalModificarTarjeta={setSwitchModalModificarTarjeta} switchModalModificarTarjeta={switchModalModificarTarjeta}   ></ModalModificarTarjeta>
+            <ModalModificarTarjeta nombreTarjeta={nombre} id={id} msi={msi} tipo={tipo} nombre={nombre} setSwitchModalModificarTarjeta={setSwitchModalModificarTarjeta} switchModalModificarTarjeta={switchModalModificarTarjeta}   ></ModalModificarTarjeta>
             
             <ContenedorTarjeta onClick={() => handleClickModalModificarTarjeta()} >{nombre}</ContenedorTarjeta>
             <ContenedorTarjeta onClick={() => handleClickModalAgregarSaldo()} dinero>{getSaldo()}</ContenedorTarjeta>
@@ -258,7 +258,7 @@ export const Starjetas = ({ tarjetas, titulo }) => {
                     {
                         tarjetas && tarjetas.length > 0 ?
                             tarjetas.map((tarjeta) => (
-                                <Tarjeta id={tarjeta.id} nombre={tarjeta.nombre} tipo={tarjeta.credito} key={tarjeta.id} saldo={tarjeta.deudas} />
+                                <Tarjeta id={tarjeta.id} msi={tarjeta.msi} nombre={tarjeta.nombre} tipo={tarjeta.credito} key={tarjeta.id} saldo={tarjeta.deudas} />
                             ))
                             : <TitularSTarjetas>Agrega tarjetas dando click al icono de tarjeta :D</TitularSTarjetas>
                     }
