@@ -5,12 +5,20 @@ import { useEffect } from "react";
 import { useState } from "react";
 
 export const ContenedorCards = styled.div`
-    display:flex;
-    justify-content: space-between;
+    display:grid;
+    grid-template-columns: repeat(5, 1fr);
+    
 
     width: 100%;
     padding: 20px 0;
     gap: 20px;
+
+    @media (max-width: 800px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+
+
 `
 const CardTStyled = styled(ContenedorPrincipal)`
     
@@ -19,6 +27,30 @@ const CardTStyled = styled(ContenedorPrincipal)`
     overflow: hidden;
     background-color: var(--colorPv2);
     justify-content: space-between;
+
+    @media (max-width: 800px) {
+        display: ${props => props.dpNone ? 'none' : ''} ;
+    }
+    
+`
+const ContenedorCards2Grid = styled.div`
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    
+
+    width: 100%;
+    padding: 20px 0;
+    gap: 20px;
+    
+    @media (min-width: 800px) {
+        display: ${props => props.dpNone ? 'none' : ''} ;
+    }
+   
+`
+const ContenedorGeneral = styled.div`
+    display: flex;
+    
+    flex-direction: column;
 `
 const CardTopStyled = styled.div`
     width: 100%;
@@ -36,10 +68,14 @@ const CardBottomStyled = styled(CardTopStyled)`
     height: 100%;
     min-height:40px;
     background-color: transparent;
+
+    @media (min-width: 800px) {
+        display: ${props => props.dpNone ? 'none' : ''} ;
+    }
 `
-const CardT = ({nombreTarjeta, cantidad}) => {
+const CardT = ({nombreTarjeta, cantidad, dpNone}) => {
     return(
-        <CardTStyled>
+        <CardTStyled dpNone={dpNone}>
             <CardTopStyled>  {nombreTarjeta} </CardTopStyled>
             <CardBottomStyled> {cantidad} </CardBottomStyled>
         </CardTStyled>
@@ -48,7 +84,7 @@ const CardT = ({nombreTarjeta, cantidad}) => {
 
 export const SCardTarjetas = () => {
     const {cardMeta} =useDatos();
-
+    
     const dataMap = cardMeta?.map((dato) =>{
         let xValue = 0;
         if(dato.deudas.length){
@@ -60,31 +96,52 @@ export const SCardTarjetas = () => {
             }
             
         }
-        let datoFormateado={name: dato.nombre, value:xValue};
-        
+        let datoFormateado={name: dato.nombre, value:xValue, msi: dato.msi};
+    
         return(datoFormateado);
         
     });
     
     const [activos, setActivos] = useState(0);
+    const [activosMsi, setActivosMsi] = useState(0);
+    const [activosRevolvente, setActivosRevolvente] = useState(0);
     const [pasivos, setPasivos] = useState(0);
     const [diff, setDiff] = useState(0);
 
     const cardOperations = () => {
         let totalActivos = 0;
+        let totalActivosMsi = 0;
+        
         let totalPasivos = 0;
-    
+        
         dataMap?.forEach(x => {
+            console.log('1');
             if (x.value > 0) {
                 totalActivos += x.value;
-            } else {
+
+                if(x.msi == true){
+                    totalActivosMsi += x.value;
+                    
+                }
+            
+            }
+        
+             else {
                 totalPasivos -= x.value;
+                if(x.msi == true){
+                    totalActivosMsi -= x.value;
+                    
+                }
             }
         });
+
+        
     
         setActivos(totalActivos);
+        setActivosMsi(totalActivosMsi);
         setPasivos(totalPasivos);
         setDiff(totalActivos - totalPasivos);
+        setActivosRevolvente(totalPasivos - totalActivosMsi);
     };
     
 
@@ -94,10 +151,23 @@ export const SCardTarjetas = () => {
 
 
     return(
+        <ContenedorGeneral>
         <ContenedorCards >
             <CardT nombreTarjeta='Activos' cantidad={activos.toFixed(2)}></CardT>
             <CardT nombreTarjeta='Pasivos' cantidad={pasivos.toFixed(2)}></CardT>
             <CardT nombreTarjeta='Deudas'  cantidad={diff.toFixed(2)}></CardT>
+
+
+            <CardT nombreTarjeta='Saldo Msi'  cantidad={activosMsi.toFixed(2)} dpNone={true} ></CardT>
+            <CardT nombreTarjeta='Saldo revolvente'  cantidad={activosRevolvente.toFixed(2)} dpNone={true} ></CardT>
         </ContenedorCards>
+
+        <ContenedorCards2Grid dpNone={true} >
+            <CardT nombreTarjeta='Saldo Msi'  cantidad={activosMsi.toFixed(2)}></CardT>
+            <CardT nombreTarjeta='Saldo revolvente'  cantidad={activosRevolvente.toFixed(2)}></CardT>
+        </ContenedorCards2Grid>
+      
+        </ContenedorGeneral>
+    
     )
 }

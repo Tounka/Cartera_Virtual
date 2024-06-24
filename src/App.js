@@ -6,7 +6,7 @@ import Session from './paginas/Session';
 import {  useDatos} from './js/DatosContext.js';
 import { useEffect } from 'react';
 import { supabase } from './supabase/client.js';
-
+import { PaginaTarjetas } from './paginas/PaginaTarjetas.jsx';
 function App() {
   const navigate = useNavigate();
   const {actualizadorDeUsuario} =useDatos();
@@ -28,6 +28,7 @@ function App() {
           
             <Routes >
               <Route  path='/Cartera'  element={<Index />} />
+              <Route  path='/Tarjetas'  element={<PaginaTarjetas />} />
               <Route  path= '/' element={<Session/>} />
             </Routes>
           

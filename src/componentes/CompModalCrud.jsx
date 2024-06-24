@@ -56,7 +56,8 @@ const handleSubmit = async (values) => {
             nombre: values.nombreCard,
             userId: userId,
             credito: values.creditoCard,
-            msi: values.msi
+            msi: values.msi,
+            limiteCredito: values.limiteCredito
         });
         const tarjetaId = result.data[0].id;
 
@@ -90,6 +91,9 @@ const handleSubmit = async (values) => {
                 if (!values.nombreCard) {
                     errors.nombreCard = 'El nombre de la tarjeta es obligatorio';
                 }
+                if (!values.limiteCredito) {
+                    errors.limiteCredito = 'Debes agregar el limite de crédito';
+                }
                 return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
@@ -114,10 +118,15 @@ const handleSubmit = async (values) => {
                                 <OptionStyled value={false}>Débito</OptionStyled>
                             </FieldSelect>
                                 {boolMsi ? (
-                                <FieldSelect Texto='Pago a MSI' ID='msi' onChange={(e) => setFieldValue('msi', e.target.value)}>
-                                    <OptionStyled value={false}>No</OptionStyled>
-                                    <OptionStyled value={true}>Sí</OptionStyled>
-                                </FieldSelect>
+                                    <>
+                                        <FieldSelect Texto='Pago a MSI' ID='msi' onChange={(e) => setFieldValue('msi', e.target.value)}>
+                                            <OptionStyled value={false}>No</OptionStyled>
+                                            <OptionStyled value={true}>Sí</OptionStyled>
+                                        </FieldSelect>
+
+                                        <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} Texto='Limite de credito' ID='limiteCredito' Type='number' />
+                                    </>
+
                             ) : ''}
                             
                             <ContedorBtns>
@@ -132,7 +141,7 @@ const handleSubmit = async (values) => {
     );
 };
 
-export const ModalModificarTarjeta = ({ switchModalModificarTarjeta, setSwitchModalModificarTarjeta, nombre, tipo, id, msi }) => {
+export const ModalModificarTarjeta = ({ switchModalModificarTarjeta, setSwitchModalModificarTarjeta, nombre, tipo, id, msi, limiteCredito }) => {
     const {actualizadorDeDatos, userMeta, cardMeta} = useDatos();
     const [textoBtnBorrar, setTextoBtnBorrar] = useState('Borrar');
     const handleClickCerrarModal = () => {
@@ -148,7 +157,8 @@ const handleSubmit = async (values) => {
         .update({
             nombre: values.nombreCard,
             credito: values.creditoCard,
-            msi: values.msi
+            msi: values.msi,
+            limiteCredito: values.limiteCredito
             })
         .match({ id: values.id })
         console.log(data,error)
@@ -206,12 +216,16 @@ const handleBorrar = async () => {
                 id: id,
                 nombreCard: nombre,
                 creditoCard: tipo, // Agregamos este campo para manejar el valor seleccionado del tipo de tarjeta
-                msi: msi
+                msi: msi,
+                limiteCredito: limiteCredito
             }}
             validate={values => {
                 const errors = {};
                 if (!values.nombreCard) {
                     errors.nombreCard = 'El nombre de la tarjeta es obligatorio';
+                }
+                if (!values.limiteCredito) {
+                    errors.limiteCredito = 'El limite de credito es obligatorio';
                 }
                 return errors;
             }}
@@ -240,23 +254,29 @@ const handleBorrar = async () => {
                                 </>
                             )}
                             </FieldSelect>
-
-                            <FieldSelect Texto='Pago a MSI' ID='msi' onChange={(e) => setFieldValue('msi', e.target.value)}>
+                            {tipo ?(
+                                <>
+                                    <FieldSelect Texto='Pago a MSI' ID='msi' onChange={(e) => setFieldValue('msi', e.target.value)}>
         
-                              {msi ? (
-                                <>
-                                    <OptionStyled value={true}>Sí</OptionStyled>
-                                    <OptionStyled value={false}>No</OptionStyled>
+                                        {msi ? (
+                                        <>
+                                            <OptionStyled value={true}>Sí</OptionStyled>
+                                            <OptionStyled value={false}>No</OptionStyled>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <OptionStyled value={false}>No</OptionStyled>
+                                            <OptionStyled value={true}>Sí</OptionStyled>
+                                        </>
+                                    )}
+                                        
+                                    </FieldSelect>
+                                    <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} Texto='Limite de credito' ID='limiteCredito' Type='number' />
+                                        
                                 </>
-                            ) : (
-                                <>
-                                   <OptionStyled value={false}>No</OptionStyled>
-                                    <OptionStyled value={true}>Sí</OptionStyled>
-                                </>
-                            )}
-                                
-                            </FieldSelect>
-                         
+                            ) :
+                            ''}
+                     
                             <ContedorBtns>
                                 <BtnCerrarModal type="button" onClick={handleBorrar}>{textoBtnBorrar}</BtnCerrarModal>
                                 <BtnSubmit type="submit">Enviar</BtnSubmit>

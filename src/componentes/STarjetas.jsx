@@ -258,7 +258,7 @@ export const Starjetas = ({ tarjetas, titulo }) => {
                     {
                         tarjetas && tarjetas.length > 0 ?
                             tarjetas.map((tarjeta) => (
-                                <Tarjeta id={tarjeta.id} msi={tarjeta.msi} nombre={tarjeta.nombre} tipo={tarjeta.credito} key={tarjeta.id} saldo={tarjeta.deudas} />
+                                <Tarjeta id={tarjeta.id} msi={tarjeta.msi} nombre={tarjeta.nombre} tipo={tarjeta.credito} key={tarjeta.id} saldo={tarjeta.deudas} limiteCredito={tarjeta.limiteCredito} />
                             ))
                             : <TitularSTarjetas>Agrega tarjetas dando click al icono de tarjeta :D</TitularSTarjetas>
                     }

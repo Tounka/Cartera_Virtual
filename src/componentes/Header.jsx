@@ -38,7 +38,7 @@ export const Header = ({ setSwitchModalAgregarTarjeta}) =>{
     return(
         <ContenedorHeader>
             <BotonLogOutStyled onClick= {() =>handleSingOut() }>       <RiLogoutCircleLine size={32}/> </BotonLogOutStyled>
-            <> Hola {userMeta?.Nombre} </>
+            <div onClick={() => navigate('/tarjetas')}> Hola {userMeta?.Nombre} </div>
             <BotonLogOutStyled onClick={() => handleModalAddCard() }>  <FaCreditCard size={32}/>        </BotonLogOutStyled>
         </ContenedorHeader>
     )
