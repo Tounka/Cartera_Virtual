@@ -63,7 +63,7 @@ const handleSubmit = async (values) => {
 
         const deudaResult = await supabase.from('deudas').insert({
             id_tarjeta: tarjetaId,
-            fecha: new Date(),
+            fecha: `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date().getDate().toString().padStart(2, '0')}`,
             fechadecorte: 1, 
             saldoalafecha: 0
         });
@@ -129,11 +129,12 @@ const handleSubmit = async (values) => {
 
                             ) : 
                             <>
-                                <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} Texto='Meta Ahorro' ID='limiteCredito' Type='number' />
                                 <FieldSelect Texto='Ahorro' ID='msi' onChange={(e) => setFieldValue('msi', e.target.value)}>
                                             <OptionStyled value={false}>No</OptionStyled> {/*ahorro Parcial*/}
                                             <OptionStyled value={true}>Sí</OptionStyled> {/*ahorro total*/}
                                 </FieldSelect>
+                                <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} Texto='Meta Ahorro' ID='limiteCredito' Type='number' />
+                            
                             </>
                             }
                             
