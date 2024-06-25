@@ -6,14 +6,14 @@ import { useState } from "react";
 
 export const ContenedorCards = styled.div`
     display:grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     
 
     width: 100%;
     padding: 20px 0;
     gap: 20px;
 
-    @media (max-width: 800px) {
+    @media (max-width: 850px) {
         grid-template-columns: repeat(3, 1fr);
     }
 
@@ -103,6 +103,7 @@ export const SCardTarjetas = () => {
     });
     
     const [activos, setActivos] = useState(0);
+    const [activosAhorro, setActivosAhorro] = useState(0);
     const [activosMsi, setActivosMsi] = useState(0);
     const [activosRevolvente, setActivosRevolvente] = useState(0);
     const [pasivos, setPasivos] = useState(0);
@@ -111,17 +112,20 @@ export const SCardTarjetas = () => {
     const cardOperations = () => {
         let totalActivos = 0;
         let totalActivosMsi = 0;
-        
+        let totalActivosAhorro = 0 ;
         let totalPasivos = 0;
         
         dataMap?.forEach(x => {
             console.log('1');
             if (x.value > 0) {
-                totalActivos += x.value;
+                
 
-                if(x.msi == true){
-                    totalActivosMsi += x.value;
+                if(x.msi == true ){
+                    totalActivosAhorro += x.value;
                     
+                    
+                }else{
+                    totalActivos += x.value;
                 }
             
             }
@@ -138,6 +142,7 @@ export const SCardTarjetas = () => {
         
     
         setActivos(totalActivos);
+        setActivosAhorro(totalActivosAhorro);
         setActivosMsi(totalActivosMsi);
         setPasivos(totalPasivos);
         setDiff(totalActivos - totalPasivos);
@@ -158,14 +163,12 @@ export const SCardTarjetas = () => {
             <CardT nombreTarjeta='Deudas'  cantidad={diff.toFixed(2)}></CardT>
 
 
-            <CardT nombreTarjeta='Saldo Msi'  cantidad={activosMsi.toFixed(2)} dpNone={true} ></CardT>
-            <CardT nombreTarjeta='Saldo revolvente'  cantidad={activosRevolvente.toFixed(2)} dpNone={true} ></CardT>
-        </ContenedorCards>
-
-        <ContenedorCards2Grid dpNone={true} >
             <CardT nombreTarjeta='Saldo Msi'  cantidad={activosMsi.toFixed(2)}></CardT>
             <CardT nombreTarjeta='Saldo revolvente'  cantidad={activosRevolvente.toFixed(2)}></CardT>
-        </ContenedorCards2Grid>
+            <CardT nombreTarjeta='Ahorro'  cantidad={activosAhorro.toFixed(2)}></CardT>
+        </ContenedorCards>
+
+     
       
         </ContenedorGeneral>
     

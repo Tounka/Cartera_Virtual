@@ -128,7 +128,13 @@ const handleSubmit = async (values) => {
                                     </>
 
                             ) : 
-                            <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} Texto='Meta Ahorro' ID='limiteCredito' Type='number' />
+                            <>
+                                <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} Texto='Meta Ahorro' ID='limiteCredito' Type='number' />
+                                <FieldSelect Texto='Ahorro' ID='msi' onChange={(e) => setFieldValue('msi', e.target.value)}>
+                                            <OptionStyled value={false}>No</OptionStyled> {/*ahorro Parcial*/}
+                                            <OptionStyled value={true}>Sí</OptionStyled> {/*ahorro total*/}
+                                </FieldSelect>
+                            </>
                             }
                             
                             <ContedorBtns>
@@ -277,7 +283,25 @@ const handleBorrar = async () => {
                                         
                                 </>
                             ) :
-                            <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} Texto='Meta Ahorro' ID='limiteCredito' Type='number' />
+                            <>
+                                <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} Texto='Meta Ahorro' ID='limiteCredito' Type='number' />
+                        
+                                <FieldSelect Texto='Cuenta ahorro' ID='msi' onChange={(e) => setFieldValue('msi', e.target.value)}>
+        
+                                    {msi ? (
+                                    <>
+                                        <OptionStyled value={true}>Sí</OptionStyled>
+                                        <OptionStyled value={false}>No</OptionStyled>
+                                    </>
+                                ) : (
+                                    <>
+                                        <OptionStyled value={false}>No</OptionStyled>
+                                        <OptionStyled value={true}>Sí</OptionStyled>
+                                    </>
+                                )}
+                                </FieldSelect>
+                            </>
+                            
                             }
                      
                             <ContedorBtns>
