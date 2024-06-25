@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik} from 'formik';
 import { TextoPrincipalSession, FormStyled, FieldCampo, BtnSubmit, ContenedorPSesion, FieldSelect, DateInput } from "./ComPSesion";
 import { supabase } from "../supabase/client";
 import { useDatos } from "../js/DatosContext";
@@ -127,7 +127,9 @@ const handleSubmit = async (values) => {
                                         <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} Texto='Limite de credito' ID='limiteCredito' Type='number' />
                                     </>
 
-                            ) : ''}
+                            ) : 
+                            <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} Texto='Meta Ahorro' ID='limiteCredito' Type='number' />
+                            }
                             
                             <ContedorBtns>
                                 <BtnSubmit type="submit">Enviar</BtnSubmit>
@@ -275,7 +277,8 @@ const handleBorrar = async () => {
                                         
                                 </>
                             ) :
-                            ''}
+                            <FieldCampo tipoManejo={'noZero'} setFieldValue={setFieldValue} Texto='Meta Ahorro' ID='limiteCredito' Type='number' />
+                            }
                      
                             <ContedorBtns>
                                 <BtnCerrarModal type="button" onClick={handleBorrar}>{textoBtnBorrar}</BtnCerrarModal>

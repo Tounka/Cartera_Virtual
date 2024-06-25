@@ -1,15 +1,21 @@
 import styled from "styled-components";
-import { ContenedorPrincipal } from "./Displays";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import {supabase} from "../supabase/client.js"
-import { Children, useEffect, useState } from "react";
+import { useState } from "react";
 import { useDatos } from "../js/DatosContext.js";
 import { RiLoginCircleLine } from "react-icons/ri";
 import { IoPersonAdd } from "react-icons/io5";
 
-export const ContenedorPSesion = styled(ContenedorPrincipal)`
-position:relative;
+export const ContenedorPSesion = styled.div`
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    width: 100%;
+    height: 100%;
+    position:relative;
     min-height: 500px;
     height:auto;
     padding: 20px 0;

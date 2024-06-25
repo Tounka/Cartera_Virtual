@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { useDatos } from "../js/DatosContext";
 
 const TarjetaStyled = styled.div`
     height: 250px;
@@ -59,12 +60,19 @@ const ContenedorTxt = styled.div`
 const COLORS = ['#FF6384', '#36A2EB'];
 
 export const Tarjeta = ({ nombreTarjeta, saldoTarjeta, limiteCredito, msi, credito, fechaDeCorte = '22' }) => {
+    const {animacionEncendidaTarjetas} = useDatos();
+    let nuevoSaldo = saldoTarjeta;
+    if(nuevoSaldo <= 0){
+        nuevoSaldo = nuevoSaldo * -1;
+    }
+    
+   
     const data = [
-        { name: 'Usado', value: saldoTarjeta },
-        { name: 'Disponible', value: limiteCredito - saldoTarjeta },
+        { name: 'Usado', value: nuevoSaldo },
+        { name: 'Disponible', value: limiteCredito - nuevoSaldo },
     ];
 
-    const porcentajeUso = ((saldoTarjeta / limiteCredito) * 100).toFixed(2);
+    const porcentajeUso = ((nuevoSaldo / limiteCredito) * 100).toFixed(2);
 
     return (
         <TarjetaStyled>
@@ -72,7 +80,7 @@ export const Tarjeta = ({ nombreTarjeta, saldoTarjeta, limiteCredito, msi, credi
 
             <ContenedorIntermedioTextoGrafica>
                 <ContenedorTxt>
-                    <TextoTarjeta size='16px'>{Math.round(saldoTarjeta)} / {limiteCredito}</TextoTarjeta>
+                    <TextoTarjeta size='16px'>{Math.round(nuevoSaldo)} / {limiteCredito}</TextoTarjeta>
                     <TextoTarjeta size='16px'>Fecha de corte: {fechaDeCorte}</TextoTarjeta>
                 </ContenedorTxt>
                 <ContenedorPie>
@@ -85,6 +93,7 @@ export const Tarjeta = ({ nombreTarjeta, saldoTarjeta, limiteCredito, msi, credi
                                 fill="#8884d8"
                                 paddingAngle={5}
                                 dataKey="value"
+                                isAnimationActive={animacionEncendidaTarjetas}
                                 labelLine={false}
                                 label={({ cx, cy }) => (
                                     <text
@@ -110,7 +119,8 @@ export const Tarjeta = ({ nombreTarjeta, saldoTarjeta, limiteCredito, msi, credi
 
             <ContenedorHorizontal>
                 <TextoTarjeta size='16px'>{credito ? 'Credito' : 'Debito'}</TextoTarjeta>
-                <TextoTarjeta size='34px' bold>{msi ? 'MSI' : 'Revolvente'}</TextoTarjeta>
+                {credito ? <TextoTarjeta size='34px' bold>{msi ? 'MSI' : 'Revolvente'}</TextoTarjeta> : <TextoTarjeta size='24px' bold> {`META Al ${Math.round(porcentajeUso)}%` }</TextoTarjeta> }
+                
             </ContenedorHorizontal>
         </TarjetaStyled>
     );

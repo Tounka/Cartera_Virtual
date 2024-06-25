@@ -13,86 +13,57 @@ const ContenedorPie = styled(ResponsiveContainer)`
     }
 `
 
-const PieGraph = ({tarjetas, titulo}) => {
+
+const PieGraph = ({ tarjetas, titulo }) => {
+    
     const [tamanoGrafica, setTamanoGrafica] = useState([80, 40]);
 
     useEffect(() => {
         const handleResize = () => {
-            // Actualizar el tamaño de la gráfica según el ancho de la ventana
             const nuevoTamanoGrafica = window.innerWidth < 400 ? [70, 0] : [80, 40];
             setTamanoGrafica(nuevoTamanoGrafica);
         };
+
         handleResize();
         window.addEventListener('resize', handleResize);
+
         return () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
 
-
     const dataMap = tarjetas?.map((dato) => {
-        
         let xValue = 0;
-        if (dato.deudas.length) {
-            let largoArreglo = dato.deudas.length;
-            if(largoArreglo >= 1){
-                xValue = dato.deudas[largoArreglo - 1].saldoalafecha;
-                if(xValue <= 0){
-                    xValue = xValue * -1;
-                }
-            }
-            
-         
+        if (dato.deudas.length > 0) {
+            const ultimoSaldo = dato.deudas[dato.deudas.length - 1].saldoalafecha;
+            xValue = ultimoSaldo <= 0 ? Math.abs(ultimoSaldo) : ultimoSaldo;
         }
-        
-        let datoFormateado = { name: dato.nombre, value: xValue };
- 
-        
-        return datoFormateado;
-
+        return { name: dato.nombre, value: xValue };
     }) || [];
 
-   
-  
-        
-    
-    const colorArray = ['#ff7675', '#fd79a8', '#a29bfe', '#00b894', '#fdcb6e'];;
-    return(
-        
-            
-                
-                <ContenedorPie style={{margins: '20px', overflow:'visible'}} >
-           
+    const colorArray = ['#ff7675', '#fd79a8', '#a29bfe', '#00b894', '#fdcb6e'];
 
-            <PieChart  >
-                <Pie 
-                dataKey="value"
-                isAnimationActive={true}
-                data={dataMap}
-                
-                outerRadius={tamanoGrafica[0]}
-                innerRadius={tamanoGrafica[1]}
-                fill="#8884d8"
-                label
-                
+    return (
+        <ContenedorPie>
+            <PieChart>
+                <Pie
+                    dataKey="value"
+                    isAnimationActive={true}
+                    data={dataMap}
+                    outerRadius={tamanoGrafica[0]}
+                    innerRadius={tamanoGrafica[1]}
+                    fill="#8884d8"
+                    label
                 >
                     {dataMap.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={colorArray[index % colorArray.length]} />
-                    ) )}
+                    ))}
                 </Pie>
-
                 <Tooltip />
             </PieChart>
-            </ContenedorPie>
-                
-            
-
-            
-        
-      
-
+        </ContenedorPie>
     );
-}
+};
 
 const ContenedorPadre = styled.div`
     display: grid;
@@ -175,8 +146,10 @@ const ContenedorTarjeta = styled.div`
         left: 0;
 
         z-index: -1;
-
-        animation-name: load;
+        animation-name: ${props => props.animacionEncendida ?  'load': ''};
+        width: ${props => props.animacionEncendida ?  '': '100%'};
+       
+        
         animation-duration: 2s;
         animation-iteration-count: 1; 
         animation-fill-mode:forwards;
@@ -193,7 +166,7 @@ const ContenedorTarjeta = styled.div`
     }
 `
 const Tarjeta = ({nombre,tipo,id, msi, saldo = 0}) =>{
-   
+   const {animacionEncendida} = useDatos();
     const getSaldo =  () => {
         
         if(saldo.length ){
@@ -227,8 +200,8 @@ const Tarjeta = ({nombre,tipo,id, msi, saldo = 0}) =>{
             <ModalAgregarSaldo saldo={saldo} id={id} tipo={tipo} nombre={nombre} setSwitchModalAgregarSaldo={setSwitchModalAgregarSaldo} switchModalAgregarSaldo={switchModalAgregarSaldo}  />
             <ModalModificarTarjeta nombreTarjeta={nombre} id={id} msi={msi} tipo={tipo} nombre={nombre} setSwitchModalModificarTarjeta={setSwitchModalModificarTarjeta} switchModalModificarTarjeta={switchModalModificarTarjeta}   ></ModalModificarTarjeta>
             
-            <ContenedorTarjeta onClick={() => handleClickModalModificarTarjeta()} >{nombre}</ContenedorTarjeta>
-            <ContenedorTarjeta onClick={() => handleClickModalAgregarSaldo()} dinero>{getSaldo()}</ContenedorTarjeta>
+            <ContenedorTarjeta animacionEncendida={animacionEncendida} onClick={() => handleClickModalModificarTarjeta()} >{nombre}</ContenedorTarjeta>
+            <ContenedorTarjeta animacionEncendida={animacionEncendida} onClick={() => handleClickModalAgregarSaldo()} dinero>{getSaldo()}</ContenedorTarjeta>
         </ContenedorPadreTarjeta>
     )
 }
@@ -263,6 +236,7 @@ export const Starjetas = ({ tarjetas, titulo }) => {
                             : <TitularSTarjetas>Agrega tarjetas dando click al icono de tarjeta :D</TitularSTarjetas>
                     }
                 </ContenedorPadreTarjetas>
+                
                         <ContenedorDerechoPieGr>
                             <TitularSTarjetas>{titulo}</TitularSTarjetas>
                             <PieGraph tarjetas={tarjetas} titulo={titulo} />

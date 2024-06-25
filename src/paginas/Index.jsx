@@ -1,11 +1,7 @@
-import { DisplayPrincipal } from "../componentes/Displays";
+import { DisplayPrincipal, DisplayPrincipalV2 } from "../componentes/Displays";
 import { Starjetas } from "../componentes/STarjetas";
 import { SCardTarjetas } from "../componentes/SCardsTarjetas";
-import { Header } from '../componentes/Header';
-import {  useNavigate } from "react-router-dom";
-import { supabase } from "../supabase/client";
 import { useEffect, useState } from "react";
-import { ModalAgregarTarjeta } from "../componentes/CompModalCrud.jsx";
 import { useDatos } from "../js/DatosContext.js";
 import { TitularSTarjetas } from "../componentes/STarjetas";
 import { SeccionBtnFecha } from "../componentes/CompSFechaDatos.jsx";
@@ -16,16 +12,20 @@ const TitularPrincipal = styled(TitularSTarjetas)`
 `
 const Index = () => {
     const data = useDatos();
-    const [user, setUser] = useState(data.userMeta);
+    
     
     const [tarjetasActivos, setTarjetasActivos] = useState();
     const [tarjetasPasivos, setTarjetasPasivos] = useState();
-    const navigate = useNavigate();
-    const [switchModalAgregarTarjeta, setSwitchModalAgregarTarjeta] = useState(0);
-    const {actualizadorDeDatos} = useDatos();
+    const {actualizadorDeDatos, actualizadorDeUsuario, setAnimacionEncendida, animacionEncendida} = useDatos();
 
     useEffect(()=>{
         actualizadorDeDatos();
+        actualizadorDeUsuario();
+
+        setTimeout(() => {
+            setAnimacionEncendida(false);
+        }, 4000);
+       
     },[]);
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const Index = () => {
             const tarjetas = data.cardMeta;
             
             const pasivo = tarjetas.filter(tarjeta => {
-                if(tarjeta.deudas == undefined || tarjeta.deudas==0){
+                if(tarjeta.deudas === undefined || tarjeta.deudas==0){
                      
                     return tarjeta;
                 }else{
@@ -73,9 +73,8 @@ const Index = () => {
     
     return(
         <>
-        <ModalAgregarTarjeta userId={data.userMeta?.sub} switchModalAgregarTarjeta={switchModalAgregarTarjeta} setSwitchModalAgregarTarjeta={setSwitchModalAgregarTarjeta}  ></ModalAgregarTarjeta>
-        <Header   setSwitchModalAgregarTarjeta={setSwitchModalAgregarTarjeta}/>
-        <DisplayPrincipal>
+   
+        <DisplayPrincipalV2>
             <SCardTarjetas />
             {tarjetasPasivos && tarjetasActivos ? ( 
                 <>
@@ -91,7 +90,7 @@ const Index = () => {
             ) : <TitularPrincipal>Agrega tarjetas dando click al icono de tarjeta :D</TitularPrincipal>}
             
        
-        </DisplayPrincipal>
+        </DisplayPrincipalV2>
         
         
         </>

@@ -16,6 +16,11 @@ export const DatosContextProvider = ({ children }) => {
     const [cardMeta, setCardMeta] = useState(null);
     const [actDatos, setActDatos] = useState(0);
     const [actUser, setActUser] = useState(0);
+    const [ruta, setRuta] = useState(0);
+    const [animacionEncendida, setAnimacionEncendida] = useState(true);
+    const [animacionEncendidaTarjetas, setAnimacionEncendidaTarjetas] = useState(true);
+
+
     const [fechaLimitante, setFechaLimitante] =useState(new Date().toISOString().split('T')[0]);
     const fetchUserData = async () => {
         try {
@@ -110,7 +115,9 @@ export const DatosContextProvider = ({ children }) => {
     ]);
 
     return (
-        <DatosContext.Provider value={{ userMeta, cardMeta, Deudas, actualizadorDeDatos, actualizadorDeUsuario, setFechaLimitante, fechaLimitante}}>
+        <DatosContext.Provider value={{ userMeta, cardMeta, Deudas, actualizadorDeDatos, actualizadorDeUsuario, setFechaLimitante, fechaLimitante, ruta, setRuta,
+            animacionEncendida, setAnimacionEncendida, animacionEncendidaTarjetas, setAnimacionEncendidaTarjetas
+        }}>
             {children}
         </DatosContext.Provider>
     );

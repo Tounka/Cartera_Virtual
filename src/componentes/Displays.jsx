@@ -1,4 +1,8 @@
 import styled from 'styled-components'
+import { useDatos } from '../js/DatosContext'
+import { useState } from 'react'
+import { Header } from './Header'
+import { ModalAgregarTarjeta } from './CompModalCrud'
 
 export const DisplayPrincipal = styled.div`
     width: 100%;
@@ -15,6 +19,22 @@ export const ContenedorPrincipal =styled.div`
     height: 100%;
 `
 
+export const DisplayPrincipalV2 = ({children }) =>{
+    const data = useDatos();
+    const [switchModalAgregarTarjeta, setSwitchModalAgregarTarjeta] = useState(0);
+
+    const {ruta, setRuta} =  useDatos();
+    return(
+        <>
+            <ModalAgregarTarjeta userId={data.userMeta?.sub} switchModalAgregarTarjeta={switchModalAgregarTarjeta} setSwitchModalAgregarTarjeta={setSwitchModalAgregarTarjeta}  ></ModalAgregarTarjeta>
+            <Header   setSwitchModalAgregarTarjeta={setSwitchModalAgregarTarjeta} ruta={ruta} setRuta={setRuta}/>
+            <DisplayPrincipal>
+                {children }
+            </DisplayPrincipal>
+        </>
+    
+    );
+}
 
 
 export const ContenedorHeader = styled(DisplayPrincipal)`
