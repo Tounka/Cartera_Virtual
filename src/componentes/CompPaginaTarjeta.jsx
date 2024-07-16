@@ -36,16 +36,19 @@ const ContenedorHorizontal = styled.div`
 const ContenedorIntermedioTextoGrafica = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
- 
+    justify-content:center;
+    align-items: center;
     width: 100%;
     height: 100%;
 `;
 const ContenedorPie = styled.div`
     height: 120px;
     width:100%;
+   
 
     @media (max-width: 900px) {
-        height: 80px;
+        height: 90px;
+      
         
     }
 `
@@ -58,6 +61,7 @@ const ContenedorTxt = styled.div`
 `
 
 const COLORS = ['#FF6384', '#36A2EB'];
+
 
 export const Tarjeta = ({ nombreTarjeta, saldoTarjeta, limiteCredito, msi, credito, fechaDeCorte = '22' }) => {
     const {animacionEncendidaTarjetas} = useDatos();
@@ -84,7 +88,7 @@ export const Tarjeta = ({ nombreTarjeta, saldoTarjeta, limiteCredito, msi, credi
                     <TextoTarjeta size='16px'>Fecha de corte: {fechaDeCorte}</TextoTarjeta>
                 </ContenedorTxt>
                 <ContenedorPie>
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" overflow = "visible">
                         <PieChart>
                             <Pie
                                 data={data}
