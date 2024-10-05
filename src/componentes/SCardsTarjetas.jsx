@@ -108,7 +108,16 @@ export const SCardTarjetas = () => {
     const [activosRevolvente, setActivosRevolvente] = useState(0);
     const [pasivos, setPasivos] = useState(0);
     const [diff, setDiff] = useState(0);
+    const [txtDeudas, setTxtDeudas] = useState('Liquido');
 
+    useEffect(() =>{
+        if(diff >= 0){
+            setTxtDeudas('Liquido')
+        }else{
+            setTxtDeudas('Deudas')
+        }
+       
+    },[diff])
     const cardOperations = () => {
         let totalActivos = 0;
         let totalActivosMsi = 0;
@@ -160,7 +169,7 @@ export const SCardTarjetas = () => {
         <ContenedorCards >
             <CardT nombreTarjeta='Activos' cantidad={activos.toFixed(2)}></CardT>
             <CardT nombreTarjeta='Pasivos' cantidad={pasivos.toFixed(2)}></CardT>
-            <CardT nombreTarjeta='Deudas'  cantidad={diff.toFixed(2)}></CardT>
+            <CardT nombreTarjeta={txtDeudas}  cantidad={diff.toFixed(2)}></CardT>
 
 
             <CardT nombreTarjeta='Saldo Msi'  cantidad={activosMsi.toFixed(2)}></CardT>
