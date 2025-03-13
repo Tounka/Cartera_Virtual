@@ -223,28 +223,53 @@ export const TitularSTarjetas = styled.h3`
 `
 
 export const Starjetas = ({ tarjetas, titulo }) => {
+    const [tarjetasOrdenadas, setTarjetasOrdenadas] = useState([]);
+
+    useEffect(() => {
+        if (tarjetas && tarjetas.length > 0) {
+            
+            const tarjetasOrdenadasCopia = [...tarjetas].sort((a, b) => {
+                const saldoA = a.deudas?.[a.deudas.length - 1]?.saldoalafecha || 0;
+                const saldoB = b.deudas?.[b.deudas.length - 1]?.saldoalafecha || 0;
+                if(titulo == "Activos"){
+                    return saldoB - saldoA;
+                    
+                }else{
+                    
+                    return saldoA - saldoB;
+                }
+            });
+            setTarjetasOrdenadas(tarjetasOrdenadasCopia);
+        }
+    }, [tarjetas]); 
+
     return (
-        tarjetas != '' ?
+        tarjetasOrdenadas.length > 0 ? (
             <ContenedorPadre>
                 <TitularSTarjetasConMargin>{titulo}</TitularSTarjetasConMargin>
                 <ContenedorPadreTarjetas>
-                    {
-                        tarjetas && tarjetas.length > 0 ?
-                            tarjetas.map((tarjeta) => (
-                                <Tarjeta id={tarjeta.id} msi={tarjeta.msi} nombre={tarjeta.nombre} tipo={tarjeta.credito} key={tarjeta.id} saldo={tarjeta.deudas} limiteCredito={tarjeta.limiteCredito} />
-                            ))
-                            : <TitularSTarjetas>Agrega tarjetas dando click al icono de tarjeta :D</TitularSTarjetas>
-                    }
+                    {tarjetasOrdenadas.map((tarjeta) => (
+                        <Tarjeta 
+                            key={tarjeta.id} 
+                            id={tarjeta.id} 
+                            msi={tarjeta.msi} 
+                            nombre={tarjeta.nombre} 
+                            tipo={tarjeta.credito} 
+                            saldo={tarjeta.deudas} 
+                            limiteCredito={tarjeta.limiteCredito} 
+                        />
+                    ))}
                 </ContenedorPadreTarjetas>
-                
-                        <ContenedorDerechoPieGr>
-                            <TitularSTarjetas>{titulo}</TitularSTarjetas>
-                            <PieGraph tarjetas={tarjetas} titulo={titulo} />
-                        </ContenedorDerechoPieGr>
-                        
-                 
-                
+
+                <ContenedorDerechoPieGr>
+                    <TitularSTarjetas>{titulo}</TitularSTarjetas>
+                    <PieGraph tarjetas={tarjetas} titulo={titulo} />
+                </ContenedorDerechoPieGr>
             </ContenedorPadre>
-            : null
+        ) : (
+            <TitularSTarjetas>
+                Agrega tarjetas dando click al icono de tarjeta :D
+            </TitularSTarjetas>
+        )
     );
-}
+};

@@ -12,92 +12,110 @@ const TitularPrincipal = styled(TitularSTarjetas)`
 `
 const Index = () => {
     const data = useDatos();
-    
-    
+
+
     const [tarjetasActivos, setTarjetasActivos] = useState();
     const [tarjetasPasivos, setTarjetasPasivos] = useState();
-    const {actualizadorDeDatos, actualizadorDeUsuario, setAnimacionEncendida, animacionEncendida} = useDatos();
+    const [tarjetasBalanceadas, setTarjetasBalanceadas] = useState();
+    const { actualizadorDeDatos, actualizadorDeUsuario, setAnimacionEncendida, animacionEncendida } = useDatos();
 
-    useEffect(()=>{
+    useEffect(() => {
         actualizadorDeDatos();
         actualizadorDeUsuario();
 
         setTimeout(() => {
             setAnimacionEncendida(false);
         }, 4000);
-       
-    },[]);
+
+    }, []);
 
     useEffect(() => {
-       
-       if(data.cardMeta){
-            const tarjetas = data.cardMeta;
-            
-            const pasivo = tarjetas.filter(tarjeta => {
-                if(tarjeta.deudas === undefined || tarjeta.deudas==0){
-                     
+
+        if (data.cardMeta) {
+            let tarjetas = data.cardMeta;
+            console.log(tarjetas)
+        
+
+
+
+            let pasivo = tarjetas.filter(tarjeta => {
+                if (tarjeta.deudas === undefined || tarjeta.deudas == 0) {
+
                     return tarjeta;
-                }else{
-                const ultimaDeuda = tarjeta.deudas[tarjeta.deudas.length - 1]; // Accede al último elemento del arreglo de deudas
+                } else {
+                    const ultimaDeuda = tarjeta.deudas[tarjeta.deudas.length - 1]; // Accede al último elemento del arreglo de deudas
                     return ultimaDeuda.saldoalafecha < 0; // Verifica si el saldo de la última deuda es menor o igual a cero
                 }
-                
-                
-              });
-              const activo = tarjetas.filter(tarjeta => {
-                if(tarjeta.deudas == undefined || tarjeta.deudas==0){
+
+
+            });
+            let activo = tarjetas.filter(tarjeta => {
+                if (tarjeta.deudas == undefined || tarjeta.deudas == 0) {
                     return tarjeta;
-                }else{
+                } else {
                     const ultimaDeuda = tarjeta.deudas[tarjeta.deudas.length - 1]; // Accede al último elemento del arreglo de deudas
-                    
-                        return ultimaDeuda.saldoalafecha >= 0; // Verifica si el saldo de la última deuda es menor o igual a cero
-                    
-                    
+
+                    return ultimaDeuda.saldoalafecha > 0; // Verifica si el saldo de la última deuda es menor o igual a cero
+
+
                 }
-   
-              });
 
-            
+            });
+            let balanceada = tarjetas.filter(tarjeta => {
+                if (tarjeta.deudas == undefined || tarjeta.deudas == 0) {
+                    return tarjeta;
+                } else {
+                    const ultimaDeuda = tarjeta.deudas[tarjeta.deudas.length - 1]; // Accede al último elemento del arreglo de deudas
 
+                    return ultimaDeuda.saldoalafecha === 0; // Verifica si el saldo de la última deuda es menor o igual a cero
+
+
+                }
+
+            });
+
+
+            setTarjetasBalanceadas(balanceada)
             setTarjetasPasivos(pasivo);
             setTarjetasActivos(activo);
-            
-       }
 
-        
+        }
+
+
     }, [data]);
-    
 
 
-    
-    
-    return(
+
+
+
+    return (
         <>
-   
-        <DisplayPrincipalV2>
-            <SCardTarjetas />
-            {tarjetasPasivos && tarjetasActivos ? ( 
-                <>
-                <>
-                <Starjetas tarjetas = {tarjetasPasivos} titulo={'Créditos'} />
-                <Starjetas tarjetas = {tarjetasActivos} titulo={'Activos'} />
-                </>
-                <DisplayPrincipal >
-                    <SeccionBtnFecha />
-                </DisplayPrincipal>
-                </>
-          
-            ) : <TitularPrincipal>Agrega tarjetas dando click al icono de tarjeta :D</TitularPrincipal>}
-            
-       
-        </DisplayPrincipalV2>
-        
-        
+
+            <DisplayPrincipalV2>
+                <SCardTarjetas />
+                {tarjetasPasivos && tarjetasActivos ? (
+                    <>
+                        <>
+                            <Starjetas tarjetas={tarjetasPasivos} titulo={'Créditos'} />
+                            <Starjetas tarjetas={tarjetasActivos} titulo={'Activos'} />
+                            <Starjetas tarjetas={tarjetasBalanceadas} titulo={'Balancedas'} />
+                        </>
+                        <DisplayPrincipal >
+                            <SeccionBtnFecha />
+                        </DisplayPrincipal>
+                    </>
+
+                ) : <TitularPrincipal>Agrega tarjetas dando click al icono de tarjeta :D</TitularPrincipal>}
+
+
+            </DisplayPrincipalV2>
+
+
         </>
-   
-        
+
+
     )
-  
+
 }
 
 export default Index;

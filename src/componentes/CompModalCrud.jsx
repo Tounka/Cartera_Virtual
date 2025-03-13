@@ -324,9 +324,9 @@ export const ModalAgregarSaldo = ({ switchModalAgregarSaldo, setSwitchModalAgreg
         if(saldo.length ){
             const largoArreglo = saldo.length;
             if (largoArreglo>= 1){
-                return(saldo[largoArreglo-1].saldoalafecha);
+                return({saldo:saldo[largoArreglo-1].saldoalafecha, fechaDeCorte:saldo[largoArreglo-1].fechadecorte });
             }else{
-                return(0); 
+                return({saldo:0, fechaDeCorte:22}); 
             }
             
             
@@ -352,9 +352,9 @@ const handleSubmit = async (values) => {
         const result = await supabase.from('deudas').insert({
             id_tarjeta: values.id,
             fecha: `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date().getDate().toString().padStart(2, '0')}`,
-            fechadecorte: values.fechadecorte,
-            saldoalafecha: values.saldoalafecha
-           
+            fechadecorte: Number(values.fechadecorte),
+            saldoalafecha: Number(values.saldoalafecha)
+        
 
         });
         
@@ -372,8 +372,8 @@ const handleSubmit = async (values) => {
             initialValues={{
                 id: id,
                 fecha: new Date(),
-                fechadecorte: 22,
-                saldoalafecha: getSaldo()
+                fechadecorte: saldoRam.fechaDeCorte,
+                saldoalafecha: saldoRam.saldo,
             }}
             validate={values => {
                 const errors = {};
@@ -383,8 +383,8 @@ const handleSubmit = async (values) => {
                 return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
-                
                 handleSubmit(values);
+                
                 
                 
             }}

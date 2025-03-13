@@ -86,7 +86,7 @@ export const PaginaTarjetas = () => {
                             limiteCredito={card.limiteCredito}
                             msi={card.msi}
                             credito={card.credito}
-                            fechaDeCorte={card.fechaDeCorte}
+                            fechaDeCorte={card.deudas[card.deudas.length - 1].fechadecorte}
                         />
                     </ContenedorTarjeta>
                 ))}
@@ -105,7 +105,7 @@ export const PaginaTarjetas = () => {
                             limiteCredito={card.limiteCredito}
                             msi={card.msi}
                             credito={card.credito}
-                            fechaDeCorte={card.fechaDeCorte}
+                            fechaDeCorte={card.deudas[card.deudas.length - 1].fechadecorte}
                         />
                     </ContenedorTarjeta>
                 ))}

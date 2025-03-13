@@ -125,7 +125,7 @@ export const SCardTarjetas = () => {
         let totalPasivos = 0;
         
         dataMap?.forEach(x => {
-            console.log('1');
+           
             if (x.value > 0) {
                 
 
